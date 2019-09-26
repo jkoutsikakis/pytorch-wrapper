@@ -11,7 +11,7 @@ from tqdm.auto import tqdm as auto_tqdm
 from .training_callbacks import NumberOfEpochsStoppingCriterionCallback, StoppingCriterionCallback
 
 
-NCOLS = 80 if auto_tqdm is tqdm._tqdm.tqdm else None
+NCOLS = 80 if auto_tqdm is tqdm.std.tqdm else None
 
 
 class System(object):

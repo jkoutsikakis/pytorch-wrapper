@@ -30,7 +30,7 @@ setup(
         'scikit-learn>=0.19,<1',
         'six>=1.11,<2',
         'torch>=1,<2',
-        'tqdm>=4.27.0,<5',
+        'tqdm>=4.36.1,<5',
         'hyperopt>=0.1,<0.2'
     ],
     tests_require=['nose'],
