@@ -21,8 +21,8 @@ class MLP(nn.Module):
                  num_hidden_layers=1,
                  hidden_layer_size=128,
                  hidden_layer_bias=True,
-                 hidden_layer_init=lambda weights: nn.init.xavier_uniform_(weights),
-                 hidden_layer_bias_init=lambda bias: nn.init.constant_(bias, 0),
+                 hidden_layer_init=None,
+                 hidden_layer_bias_init=None,
                  hidden_activation=nn.ReLU,
                  hidden_dp=None,
                  hidden_layer_pre_activation_bn=False,
@@ -30,8 +30,8 @@ class MLP(nn.Module):
                  hidden_layer_pre_activation_ln=False,
                  hidden_layer_post_activation_ln=False,
 
-                 output_layer_init=lambda weights: nn.init.xavier_uniform_(weights),
-                 output_layer_bias_init=lambda bias: nn.init.constant_(bias, 0),
+                 output_layer_init=None,
+                 output_layer_bias_init=None,
                  output_size=1,
                  output_layer_bias=True,
                  output_activation=None,
@@ -130,9 +130,9 @@ class MLP(nn.Module):
 
             cur_linear = nn.Linear(input_size, hidden_layer_size[0], hidden_layer_bias[0])
             if hidden_layer_init is not None:
-                hidden_layer_init(cur_linear.weight)
+                hidden_layer_init(cur_linear.weight, hidden_activation[0])
             if hidden_layer_bias_init is not None and hidden_layer_bias[0]:
-                hidden_layer_bias_init(cur_linear.bias)
+                hidden_layer_bias_init(cur_linear.bias, hidden_activation[0])
 
             self._hidden_layer_list.append(cur_linear)
 
@@ -158,9 +158,9 @@ class MLP(nn.Module):
 
                 cur_linear = nn.Linear(hidden_layer_size[i - 1], hidden_layer_size[i], hidden_layer_bias[i])
                 if hidden_layer_init is not None:
-                    hidden_layer_init(cur_linear.weight)
+                    hidden_layer_init(cur_linear.weight, hidden_activation[i])
                 if hidden_layer_bias_init is not None and hidden_layer_bias[i]:
-                    hidden_layer_bias_init(cur_linear.bias)
+                    hidden_layer_bias_init(cur_linear.bias, hidden_activation[i])
 
                 self._hidden_layer_list.append(cur_linear)
 
@@ -187,15 +187,15 @@ class MLP(nn.Module):
         else:
             self._output_layer = nn.Linear(input_size, output_size, output_layer_bias)
 
+        self._output_activation = output_activation() if output_activation is not None else None
+
         if output_layer_init is not None:
-            output_layer_init(self._output_layer.weight)
+            output_layer_init(self._output_layer.weight, self._output_activation)
         if output_layer_bias_init is not None and output_layer_bias:
-            output_layer_bias_init(self._output_layer.bias)
+            output_layer_bias_init(self._output_layer.bias, self._output_activation)
 
         self._output_layer_pre_activation_bn = nn.BatchNorm1d(output_size) if output_layer_pre_activation_bn else None
         self._output_layer_pre_activation_ln = LayerNorm(output_size) if output_layer_pre_activation_ln else None
-
-        self._output_activation = output_activation() if output_activation is not None else None
 
         self._output_layer_post_activation_bn = nn.BatchNorm1d(output_size) if output_layer_post_activation_bn else None
         self._output_layer_post_activation_ln = LayerNorm(output_size) if output_layer_post_activation_ln else None

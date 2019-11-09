@@ -21,7 +21,11 @@ class TransformerEncoderBlock(nn.Module):
 
         self._norm_1 = LayerNorm(time_step_size)
         self._norm_2 = LayerNorm(time_step_size)
-        self._attn = MultiHeadAttention(time_step_size, heads, dp, is_end_padded)
+        self._q_linear = nn.Linear(time_step_size, time_step_size)
+        self._v_linear = nn.Linear(time_step_size, time_step_size)
+        self._k_linear = nn.Linear(time_step_size, time_step_size)
+        self._attn = MultiHeadAttention(time_step_size, heads, 'dot', dp, is_end_padded)
+        self._att_out_linear = nn.Linear(time_step_size, time_step_size)
         self._out_mlp = out_mlp
         self._dropout_1 = nn.Dropout(dp)
         self._dropout_2 = nn.Dropout(dp)
@@ -34,11 +38,19 @@ class TransformerEncoderBlock(nn.Module):
         :return: 3D Tensor (batch_size, sequence_length, time_step_size).
         """
 
-        batch_sequences = batch_sequences + self._attn(batch_sequences,
-                                                       batch_sequences,
-                                                       batch_sequences,
-                                                       batch_sequence_lengths,
-                                                       batch_sequence_lengths)
+        q = self._q_linear(batch_sequences)
+        k = self._k_linear(batch_sequences)
+        v = self._v_linear(batch_sequences)
+
+        batch_sequences = batch_sequences + self._att_out_linear(
+            self._attn(
+                q,
+                k,
+                v,
+                batch_sequence_lengths,
+                batch_sequence_lengths
+            )['output']
+        )
 
         batch_sequences = self._norm_1(self._dropout_1(batch_sequences))
 
