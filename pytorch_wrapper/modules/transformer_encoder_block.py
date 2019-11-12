@@ -24,7 +24,7 @@ class TransformerEncoderBlock(nn.Module):
         self._q_linear = nn.Linear(time_step_size, time_step_size)
         self._v_linear = nn.Linear(time_step_size, time_step_size)
         self._k_linear = nn.Linear(time_step_size, time_step_size)
-        self._attn = MultiHeadAttention(time_step_size, heads, 'dot', dp, is_end_padded)
+        self._attn = MultiHeadAttention(time_step_size, time_step_size, time_step_size, heads, 'dot', dp, is_end_padded)
         self._att_out_linear = nn.Linear(time_step_size, time_step_size)
         self._out_mlp = out_mlp
         self._dropout_1 = nn.Dropout(dp)
