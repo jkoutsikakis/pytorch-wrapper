@@ -24,7 +24,7 @@ copyright = '2019, John Koutsikakis'
 author = 'John Koutsikakis'
 
 # The full version, including alpha/beta/rc tags
-release = 'v1.0.3'
+release = 'v1.0.4'
 
 # -- General configuration ---------------------------------------------------
 

@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name='pytorch-wrapper',
-    version='1.0.3',
+    version='1.0.4',
     description='PyTorchWrapper is a library that provides a systematic and extensible way to build, train, evaluate, '
                 'and tune deep learning models using PyTorch. It also provides several ready to use modules and '
                 'functions for fast model development.',
