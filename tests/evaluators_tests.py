@@ -500,7 +500,7 @@ class MultiClassF1EvaluatorTestCase(unittest.TestCase):
         self.assertAlmostEqual(res.score, correct)
 
 
-class SequenceLabelingEvaluatorWrapperTestCase(unittest.TestCase):
+class TokenLabelingEvaluatorWrapperTestCase(unittest.TestCase):
 
     def test_f1_binary(self):
         bi_sequence_len_idx = 1
@@ -512,12 +512,12 @@ class SequenceLabelingEvaluatorWrapperTestCase(unittest.TestCase):
         wrapped_evaluator = evaluators.F1Evaluator(model_output_key=model_output_key,
                                                    batch_target_key=batch_target_key,
                                                    average='binary')
-        evaluator = evaluators.SequenceLabelingEvaluatorWrapper(evaluator=wrapped_evaluator,
-                                                                batch_input_sequence_length_idx=bi_sequence_len_idx,
-                                                                batch_input_key=batch_input_key,
-                                                                model_output_key=model_output_key,
-                                                                batch_target_key=batch_target_key,
-                                                                end_padded=end_padded)
+        evaluator = evaluators.TokenLabelingEvaluatorWrapper(evaluator=wrapped_evaluator,
+                                                             batch_input_sequence_length_idx=bi_sequence_len_idx,
+                                                             batch_input_key=batch_input_key,
+                                                             model_output_key=model_output_key,
+                                                             batch_target_key=batch_target_key,
+                                                             end_padded=end_padded)
 
         output = torch.tensor([[0.9, 0.2, -2.], [0.8, 0.3, -2.]])
         batch = {'target': torch.tensor([[1., 1., -1.], [0., 0., -1.]]),
@@ -543,12 +543,12 @@ class SequenceLabelingEvaluatorWrapperTestCase(unittest.TestCase):
                                                    batch_target_key=batch_target_key,
                                                    average='macro')
 
-        evaluator = evaluators.SequenceLabelingEvaluatorWrapper(evaluator=wrapped_evaluator,
-                                                                batch_input_sequence_length_idx=bi_sequence_len_idx,
-                                                                batch_input_key=batch_input_key,
-                                                                model_output_key=model_output_key,
-                                                                batch_target_key=batch_target_key,
-                                                                end_padded=end_padded)
+        evaluator = evaluators.TokenLabelingEvaluatorWrapper(evaluator=wrapped_evaluator,
+                                                             batch_input_sequence_length_idx=bi_sequence_len_idx,
+                                                             batch_input_key=batch_input_key,
+                                                             model_output_key=model_output_key,
+                                                             batch_target_key=batch_target_key,
+                                                             end_padded=end_padded)
 
         output = torch.tensor([[[0.6, 0.2], [0.7, 0.2], [-2., -2.]], [[0.6, 0.6], [0.3, 0.55], [-2., -2.]]],
                               dtype=torch.float32)
@@ -583,12 +583,12 @@ class SequenceLabelingEvaluatorWrapperTestCase(unittest.TestCase):
                                                              batch_target_key=batch_target_key,
                                                              average='macro')
 
-        evaluator = evaluators.SequenceLabelingEvaluatorWrapper(evaluator=wrapped_evaluator,
-                                                                batch_input_sequence_length_idx=bi_sequence_len_idx,
-                                                                batch_input_key=batch_input_key,
-                                                                model_output_key=model_output_key,
-                                                                batch_target_key=batch_target_key,
-                                                                end_padded=end_padded)
+        evaluator = evaluators.TokenLabelingEvaluatorWrapper(evaluator=wrapped_evaluator,
+                                                             batch_input_sequence_length_idx=bi_sequence_len_idx,
+                                                             batch_input_key=batch_input_key,
+                                                             model_output_key=model_output_key,
+                                                             batch_target_key=batch_target_key,
+                                                             end_padded=end_padded)
 
         output = torch.tensor([[[0.5, 0.1, 0.4], [0.3, 0.3, 0.4]], [[0.6, 0.4, 0.0], [-2., -2., -2.]]],
                               dtype=torch.float32)
