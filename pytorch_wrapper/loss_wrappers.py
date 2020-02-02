@@ -54,9 +54,9 @@ class GenericPointWiseLossWrapper(AbstractLossWrapper):
         return self._loss(output, batch_targets)
 
 
-class SequenceLabelingGenericPointWiseLossWrapper(AbstractLossWrapper):
+class TokenLabelingGenericPointWiseLossWrapper(AbstractLossWrapper):
     """
-    Adapter that wraps a pointwise loss module. It is used in sequence labeling tasks in order to flat the output and
+    Adapter that wraps a pointwise loss module. It is used in token labeling tasks in order to flat the output and
     target while discarding invalid values due to padding.
     """
 
@@ -74,7 +74,7 @@ class SequenceLabelingGenericPointWiseLossWrapper(AbstractLossWrapper):
         :param perform_last_activation: Whether to perform the last_activation.
         :param end_padded: Whether the sequences are end-padded.
         """
-        super(SequenceLabelingGenericPointWiseLossWrapper, self).__init__()
+        super(TokenLabelingGenericPointWiseLossWrapper, self).__init__()
         self._loss = loss
         self._batch_input_sequence_length_idx = batch_input_sequence_length_idx
         self._batch_input_key = batch_input_key

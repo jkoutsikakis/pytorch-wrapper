@@ -523,9 +523,9 @@ class MultiClassF1Evaluator(AbstractEvaluator):
         ), self._average + '-f1', '%5.4f', is_max_better=True)
 
 
-class SequenceLabelingEvaluatorWrapper(AbstractEvaluator):
+class TokenLabelingEvaluatorWrapper(AbstractEvaluator):
     """
-    Adapter that wraps a pointwise loss module. It is used in sequence labeling tasks in order to flat the output and
+    Adapter that wraps an evaluator. It is used in token labeling tasks in order to flat the output and
     target while discarding invalid values due to padding.
     """
 
@@ -544,7 +544,7 @@ class SequenceLabelingEvaluatorWrapper(AbstractEvaluator):
         """
 
         self._evaluator = evaluator
-        super(SequenceLabelingEvaluatorWrapper, self).__init__()
+        super(TokenLabelingEvaluatorWrapper, self).__init__()
         self._batch_input_sequence_length_idx = batch_input_sequence_length_idx
         self._batch_input_key = batch_input_key
         self._model_output_key = model_output_key
