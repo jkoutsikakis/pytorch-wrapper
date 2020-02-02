@@ -28,7 +28,7 @@ There are also the following examples in notebook format:
 2. [Image Classification Task](examples/2_image_classification_task.ipynb)
 3. [Tuning Image Classifier](examples/3_tuning_image_classifier.ipynb)
 4. [Text Classification Task](examples/4_text_classification_task.ipynb)
-5. [Sequence Classification Task](examples/5_sequence_classification_task.ipynb)
+5. [Token Classification Task](examples/5_token_classification_task.ipynb)
 6. [Custom Callback](examples/6_custom_callback.ipynb)
 7. [Custom Loss Wrapper](examples/7_custom_loss_wrapper.ipynb)
 8. [Custom Evaluator](examples/8_custom_evaluator.ipynb)
