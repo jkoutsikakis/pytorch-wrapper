@@ -4,6 +4,7 @@ import torch
 import tqdm
 import time
 
+from functools import partial
 from collections import OrderedDict
 from torch import nn
 from tqdm.auto import tqdm as auto_tqdm
@@ -46,7 +47,8 @@ class System(object):
               batch_input_key='input',
               evaluators=None,
               callbacks=None,
-              gradient_accumulation_steps=1):
+              gradient_accumulation_steps=1,
+              verbose=True):
         """
         Trains the model on a dataset.
 
@@ -67,6 +69,7 @@ class System(object):
             training after the 10th iteration (counting from 0).
         :param gradient_accumulation_steps: Number of backward calls before an optimization step. Used in order to
             simulate a larger batch size).
+        :param verbose: Whether to print progress info.
         :return: List containing the results for each epoch.
         """
 
@@ -79,7 +82,8 @@ class System(object):
             batch_input_key,
             evaluators,
             callbacks,
-            gradient_accumulation_steps
+            gradient_accumulation_steps,
+            verbose
         )
 
         return trainer.run()
@@ -93,6 +97,7 @@ class System(object):
                             evaluators=None,
                             callbacks=None,
                             gradient_accumulation_steps=1,
+                            verbose=True,
                             multi_gpu_device_ids=None,
                             multi_gpu_output_device=None,
                             multi_gpu_dim=0):
@@ -117,6 +122,7 @@ class System(object):
             training after the 10th iteration (counting from 0).
         :param gradient_accumulation_steps: Number of backward calls before an optimization step. Used in order to
             simulate a larger batch size).
+        :param verbose: Whether to print progress info.
         :param multi_gpu_device_ids: CUDA devices used during training (default: all devices).
         :param multi_gpu_output_device: Device location of output (default: device_ids[0]).
         :param multi_gpu_dim: Int dimension on which to split each batch.
@@ -133,7 +139,8 @@ class System(object):
                 batch_input_key,
                 evaluators,
                 callbacks,
-                gradient_accumulation_steps
+                gradient_accumulation_steps,
+                verbose
             ],
             multi_gpu_device_ids,
             multi_gpu_output_device,
@@ -145,7 +152,8 @@ class System(object):
                 perform_last_activation=True,
                 batch_id_key=None,
                 batch_input_key='input',
-                model_output_key=None):
+                model_output_key=None,
+                verbose=True):
         """
         Computes the outputs of the model on a dataset.
 
@@ -157,6 +165,7 @@ class System(object):
         :param batch_input_key: Key where the dict returned by the dataloader contains the input of the model.
         :param model_output_key: Key where the dict returned by the model contains the actual predictions. Leave None
             if the model returns only the predictions.
+        :param verbose: Whether to print progress info.
         :return: Dict containing a list of predictions (key=`outputs`) and a list of ids (key=`batch_id_key`) if
             provided by the dataloader.
         """
@@ -165,7 +174,8 @@ class System(object):
         ids_list = []
 
         with torch.no_grad():
-            for i, batch in enumerate(auto_tqdm(data_loader, ncols=NCOLS)):
+            gen = partial(auto_tqdm, ncols=NCOLS) if verbose else lambda x: x
+            for i, batch in enumerate(gen(data_loader)):
 
                 if batch_id_key is not None:
                     if type(batch[batch_id_key]) is torch.Tensor:
@@ -194,6 +204,7 @@ class System(object):
                               batch_id_key=None,
                               batch_input_key='input',
                               model_output_key=None,
+                              verbose=True,
                               multi_gpu_device_ids=None,
                               multi_gpu_output_device=None,
                               multi_gpu_dim=0):
@@ -209,6 +220,7 @@ class System(object):
         :param batch_input_key: Key where the dict returned by the dataloader contains the input of the model.
         :param model_output_key: Key where the dict returned by the model contains the actual predictions. Leave None
             if the model returns only the predictions.
+        :param verbose: Whether to print progress info.
         :param multi_gpu_device_ids: CUDA devices used during training (default: all devices).
         :param multi_gpu_output_device: Device location of output (default: device_ids[0]).
         :param multi_gpu_dim: Int dimension on which to split each batch.
@@ -223,14 +235,15 @@ class System(object):
                 perform_last_activation,
                 batch_id_key,
                 batch_input_key,
-                model_output_key
+                model_output_key,
+                verbose
             ],
             multi_gpu_device_ids,
             multi_gpu_output_device,
             multi_gpu_dim
         )
 
-    def pure_predict(self, data_loader, batch_input_key='input', keep_batches=True):
+    def pure_predict(self, data_loader, batch_input_key='input', keep_batches=True, verbose=True):
         """
         Computes the output of the model on a dataset.
 
@@ -240,6 +253,7 @@ class System(object):
             model.
         :param keep_batches: If set to True then the method also returns a list of the batches returned by the
             dataloader.
+        :param verbose: Whether to print progress info.
         :return: Dict containing a list of batched model outputs (key=`output_list`) and a list of batches as returned
             by the dataloader (key=`batch_list`) if keep_batches is set to True.
         """
@@ -248,7 +262,8 @@ class System(object):
         output_list = []
 
         with torch.no_grad():
-            for i, batch in enumerate(auto_tqdm(data_loader, ncols=NCOLS)):
+            gen = partial(auto_tqdm, ncols=NCOLS) if verbose else lambda x: x
+            for i, batch in enumerate(gen(data_loader)):
                 if keep_batches:
                     batch_list.append(batch)
                 output = self.predict_batch(batch[batch_input_key])
@@ -275,6 +290,7 @@ class System(object):
                                    data_loader,
                                    batch_input_key='input',
                                    keep_batches=True,
+                                   verbose=True,
                                    multi_gpu_device_ids=None,
                                    multi_gpu_output_device=None,
                                    multi_gpu_dim=0):
@@ -288,6 +304,7 @@ class System(object):
             model.
         :param keep_batches: If set to True then the method also returns a list of the batches returned by the
             dataloader.
+        :param verbose: Whether to print progress info.
         :param multi_gpu_device_ids: CUDA devices used during training (default: all devices).
         :param multi_gpu_output_device: Device location of output (default: device_ids[0]).
         :param multi_gpu_dim: Int dimension on which to split each batch.
@@ -300,7 +317,8 @@ class System(object):
             [
                 data_loader,
                 batch_input_key,
-                keep_batches
+                keep_batches,
+                verbose
             ],
             multi_gpu_device_ids,
             multi_gpu_output_device,
@@ -327,7 +345,7 @@ class System(object):
 
         return self.model(*batch_inputs)
 
-    def evaluate(self, data_loader, evaluators, batch_input_key='input'):
+    def evaluate(self, data_loader, evaluators, batch_input_key='input', verbose=True):
         """
         Evaluates the model on a dataset.
 
@@ -338,6 +356,7 @@ class System(object):
             names.
         :param batch_input_key: The key of the batches returned by the data_loader that contains the input of the
             model.
+        :param verbose: Whether to print progress info.
         :return: Dict containing an object derived from AbstractEvaluatorResults for each evaluator.
         """
 
@@ -347,7 +366,8 @@ class System(object):
             evaluators[evaluator_name].reset()
 
         with torch.no_grad():
-            for i, batch in enumerate(auto_tqdm(data_loader, ncols=NCOLS)):
+            gen = partial(auto_tqdm, ncols=NCOLS) if verbose else lambda x: x
+            for i, batch in enumerate(gen(data_loader)):
 
                 outputs = self.predict_batch(batch[batch_input_key])
 
@@ -364,6 +384,7 @@ class System(object):
                                data_loader,
                                evaluators,
                                batch_input_key='input',
+                               verbose=True,
                                multi_gpu_device_ids=None,
                                multi_gpu_output_device=None,
                                multi_gpu_dim=0):
@@ -378,6 +399,7 @@ class System(object):
             names.
         :param batch_input_key: The key of the batches returned by the data_loader that contains the input of the
             model.
+        :param verbose: Whether to print progress info.
         :param multi_gpu_device_ids: CUDA devices used during training (default: all devices).
         :param multi_gpu_output_device: Device location of output (default: device_ids[0]).
         :param multi_gpu_dim: Int dimension on which to split each batch.
@@ -389,7 +411,8 @@ class System(object):
             [
                 data_loader,
                 evaluators,
-                batch_input_key
+                batch_input_key,
+                verbose
             ],
             multi_gpu_device_ids,
             multi_gpu_output_device,
@@ -503,7 +526,8 @@ class _Trainer(object):
                  batch_input_key,
                  evaluators,
                  callbacks,
-                 gradient_accumulation_steps):
+                 gradient_accumulation_steps,
+                 verbose):
         """
         Used internally to train the model on a dataset.
 
@@ -525,6 +549,7 @@ class _Trainer(object):
             training after the 10th iteration (counting from 0).
         :param gradient_accumulation_steps: Number of backward calls before an optimization step. Used in order to
             simulate a larger batch size).
+        :param verbose: Whether to print progress info.
         :return: List containing the results for each epoch.
         """
 
@@ -546,7 +571,9 @@ class _Trainer(object):
             # current output
             'current_output': None,
             # current loss
-            'current_loss': None
+            'current_loss': None,
+            # verbose
+            '_verbose': verbose
 
         }
 
@@ -571,7 +598,8 @@ class _Trainer(object):
         while not self.training_context['stop_training']:
             self._train_epoch()
             self._train_evaluation()
-            auto_tqdm.write('')
+            if self.training_context['_verbose']:
+                auto_tqdm.write('')
 
         for callback in self.callbacks:
             callback.on_training_end(self.training_context)
@@ -592,15 +620,16 @@ class _Trainer(object):
         for callback in self.callbacks:
             callback.on_epoch_start(self.training_context)
 
-        pre_time = time.time()
-        auto_tqdm.write('-' * 80)
-        auto_tqdm.write('')
-        auto_tqdm.write('Epoch: %d' % (self.training_context['_current_epoch']))
-        auto_tqdm.write('')
-        auto_tqdm.write('Training...')
-        auto_tqdm.write('')
+        if self.training_context['_verbose']:
+            pre_time = time.time()
+            auto_tqdm.write('-' * 80)
+            auto_tqdm.write('')
+            auto_tqdm.write('Epoch: %d' % (self.training_context['_current_epoch']))
+            auto_tqdm.write('')
+            auto_tqdm.write('Training...')
+            auto_tqdm.write('')
 
-        pbar = auto_tqdm(total=len(self.train_data_loader), ncols=NCOLS)
+            pbar = auto_tqdm(total=len(self.train_data_loader), ncols=NCOLS)
 
         cum_loss = 0
         self.training_context['optimizer'].zero_grad()
@@ -609,16 +638,18 @@ class _Trainer(object):
             perform_opt_step = (i % self.gradient_accumulation_steps == 0) or (i == (len(self.train_data_loader) - 1))
             cum_loss += self._train_batch(batch, perform_opt_step)
 
-            train_loss = cum_loss / (i + 1)
-            pbar.update(1)
-            pbar.set_postfix(ordered_dict=OrderedDict([('loss', '%5.4f' % train_loss)]))
+            if self.training_context['_verbose']:
+                train_loss = cum_loss / (i + 1)
+                pbar.update(1)
+                pbar.set_postfix(ordered_dict=OrderedDict([('loss', '%5.4f' % train_loss)]))
 
         for callback in self.callbacks:
             callback.on_epoch_end(self.training_context)
 
-        pbar.close()
-        auto_tqdm.write('Time elapsed: %d' % (time.time() - pre_time))
-        auto_tqdm.write('')
+        if self.training_context['_verbose']:
+            pbar.close()
+            auto_tqdm.write('Time elapsed: %d' % (time.time() - pre_time))
+            auto_tqdm.write('')
 
     def _train_batch(self, batch, perform_opt_step):
         """
@@ -681,8 +712,9 @@ class _Trainer(object):
 
         if self.evaluation_data_loaders is not None and self.evaluators is not None:
 
-            auto_tqdm.write('Evaluating...')
-            auto_tqdm.write('')
+            if self.training_context['_verbose']:
+                auto_tqdm.write('Evaluating...')
+                auto_tqdm.write('')
 
             for callback in self.callbacks:
                 callback.on_evaluation_start(self.training_context)
@@ -693,7 +725,8 @@ class _Trainer(object):
                 current_dataset_results = self.training_context['system'].evaluate(
                     self.evaluation_data_loaders[current_dataset_name],
                     self.evaluators,
-                    self.batch_input_key
+                    self.batch_input_key,
+                    self.training_context['_verbose']
                 )
                 current_results[current_dataset_name] = current_dataset_results
                 for evaluator_name in self.evaluators:
