@@ -10,7 +10,6 @@ from tqdm.auto import tqdm as auto_tqdm
 
 from .training_callbacks import NumberOfEpochsStoppingCriterionCallback, StoppingCriterionCallback
 
-
 NCOLS = 80 if auto_tqdm is tqdm.std.tqdm else None
 
 
@@ -87,17 +86,21 @@ class System(object):
         else:
             self.to(torch.device('cuda'))
 
-        self.train(loss_wrapper,
-                   optimizer,
-                   train_data_loader,
-                   evaluation_data_loaders,
-                   batch_input_key,
-                   evaluators,
-                   callbacks,
-                   gradient_accumulation_steps)
+        history = self.train(
+            loss_wrapper,
+            optimizer,
+            train_data_loader,
+            evaluation_data_loaders,
+            batch_input_key,
+            evaluators,
+            callbacks,
+            gradient_accumulation_steps
+        )
 
         self.model = self.model.module
         self.to(temp_device)
+
+        return history
 
     def train(self,
               loss_wrapper,
@@ -131,15 +134,17 @@ class System(object):
         :return: List containing the results for each epoch.
         """
 
-        trainer = _Trainer(self,
-                           loss_wrapper,
-                           optimizer,
-                           train_data_loader,
-                           evaluation_data_loaders,
-                           batch_input_key,
-                           evaluators,
-                           callbacks,
-                           gradient_accumulation_steps)
+        trainer = _Trainer(
+            self,
+            loss_wrapper,
+            optimizer,
+            train_data_loader,
+            evaluation_data_loaders,
+            batch_input_key,
+            evaluators,
+            callbacks,
+            gradient_accumulation_steps
+        )
 
         return trainer.run()
 
