@@ -32,18 +32,25 @@ class SoftmaxAttentionEncoder(nn.Module):
             attention scores (key=`att_scores`).
         """
 
-        batch_context_vector = batch_context_vector.unsqueeze(1).expand(batch_context_vector.shape[0],
-                                                                        batch_sequences.shape[1],
-                                                                        batch_context_vector.shape[1])
+        batch_context_vector = batch_context_vector.unsqueeze(1).expand(
+            batch_context_vector.shape[0],
+            batch_sequences.shape[1],
+            batch_context_vector.shape[1]
+        )
         attention_mlp_input = torch.cat([batch_sequences, batch_context_vector], dim=-1)
         att_scores = self._attention_mlp(attention_mlp_input)
-        mask = pwF.create_mask_from_length(batch_sequence_lengths, batch_sequences.size(1),
-                                           self._is_end_padded).unsqueeze(-1)
+        mask = pwF.create_mask_from_length(
+            batch_sequence_lengths,
+            batch_sequences.size(1),
+            self._is_end_padded
+        ).unsqueeze(-1)
 
         masked_att_scores = att_scores.masked_fill(mask == 0, -1e9)
 
         masked_att_scores = F.softmax(masked_att_scores, dim=-2)
         masked_att_scores_t = torch.transpose(masked_att_scores, 1, 2)
 
-        return {'output': torch.matmul(masked_att_scores_t, batch_sequences).squeeze(1),
-                'att_scores': masked_att_scores.squeeze(2)}
+        return {
+            'output': torch.matmul(masked_att_scores_t, batch_sequences).squeeze(1),
+            'att_scores': masked_att_scores.squeeze(2)
+        }

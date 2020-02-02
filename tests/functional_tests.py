@@ -13,10 +13,13 @@ class CreateMaskFromLengthTestCase(unittest.TestCase):
         is_end_padded = True
 
         result = pwF.create_mask_from_length(length_tensor, mask_size, is_end_padded)
-        correct = torch.tensor([
-            [1, 0, 0, 0, 0],
-            [1, 1, 1, 0, 0]
-        ], dtype=torch.uint8)
+        correct = torch.tensor(
+            [
+                [1, 0, 0, 0, 0],
+                [1, 1, 1, 0, 0]
+            ],
+            dtype=torch.uint8
+        )
 
         self.assertListEqual(result.tolist(), correct.tolist())
 
@@ -26,10 +29,13 @@ class CreateMaskFromLengthTestCase(unittest.TestCase):
         is_end_padded = False
 
         result = pwF.create_mask_from_length(length_tensor, mask_size, is_end_padded)
-        correct = torch.tensor([
-            [0, 0, 0, 0, 1],
-            [0, 0, 1, 1, 1]
-        ], dtype=torch.uint8)
+        correct = torch.tensor(
+            [
+                [0, 0, 0, 0, 1],
+                [0, 0, 1, 1, 1]
+            ],
+            dtype=torch.uint8
+        )
 
         self.assertListEqual(result.tolist(), correct.tolist())
 
@@ -49,7 +55,9 @@ class CreateMaskFromLengthTestCase(unittest.TestCase):
                     [0, 0, 1, 1, 1],
                     [0, 1, 1, 1, 1]
                 ]
-            ], dtype=torch.uint8)
+            ],
+            dtype=torch.uint8
+        )
 
         self.assertListEqual(result.tolist(), correct.tolist())
 
@@ -69,7 +77,9 @@ class MaskedMaxPoolingTestCase(unittest.TestCase):
                     [0, 3, 7, 4, 7],
                     [0, 3, 7, 4, 7]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         mask = torch.tensor(
             [
@@ -83,7 +93,9 @@ class MaskedMaxPoolingTestCase(unittest.TestCase):
                     [0, 1, 1, 1, 1],
                     [0, 0, 0, 1, 1]
                 ]
-            ], dtype=torch.uint8)
+            ],
+            dtype=torch.uint8
+        )
 
         dim = -2
 
@@ -91,7 +103,9 @@ class MaskedMaxPoolingTestCase(unittest.TestCase):
             [
                 [0, 2, 7, 4, 7],
                 [9, 3, 7, 7, 7]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.masked_max_pooling(data_tensor, mask, dim)
 
@@ -110,13 +124,17 @@ class MaskedMaxPoolingTestCase(unittest.TestCase):
                     [0, 3, 7, 4, 7],
                     [0, 3, 7, 4, 7]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         mask = torch.tensor(
             [
                 [1, 1, 0],
                 [1, 0, 0]
-            ], dtype=torch.uint8)
+            ],
+            dtype=torch.uint8
+        )
 
         dim = -2
 
@@ -124,7 +142,9 @@ class MaskedMaxPoolingTestCase(unittest.TestCase):
             [
                 [8, 4, 6, 1, 3],
                 [9, 7, 2, 7, 3]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.masked_max_pooling(data_tensor, mask, dim)
 
@@ -146,7 +166,9 @@ class MaskedMinPoolingTestCase(unittest.TestCase):
                     [0, 3, 7, 4, 7],
                     [0, 3, 7, 4, 7]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         mask = torch.tensor(
             [
@@ -160,7 +182,9 @@ class MaskedMinPoolingTestCase(unittest.TestCase):
                     [0, 1, 1, 1, 1],
                     [0, 0, 0, 1, 1]
                 ]
-            ], dtype=torch.uint8)
+            ],
+            dtype=torch.uint8
+        )
 
         dim = -2
 
@@ -168,7 +192,9 @@ class MaskedMinPoolingTestCase(unittest.TestCase):
             [
                 [0, 2, 7, 1, 1],
                 [9, 3, 2, 4, 3]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.masked_min_pooling(data_tensor, mask, dim)
 
@@ -188,13 +214,17 @@ class MaskedMinPoolingTestCase(unittest.TestCase):
                     [0, 3, 7, 4, 7]
                 ]
 
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         mask = torch.tensor(
             [
                 [1, 1, 0],
                 [1, 0, 0]
-            ], dtype=torch.uint8)
+            ],
+            dtype=torch.uint8
+        )
 
         dim = -2
 
@@ -202,7 +232,9 @@ class MaskedMinPoolingTestCase(unittest.TestCase):
             [
                 [0, 2, 0, 0, 1],
                 [9, 7, 2, 7, 3]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.masked_min_pooling(data_tensor, mask, dim)
 
@@ -224,7 +256,9 @@ class MaskedMeanPoolingTestCase(unittest.TestCase):
                     [0, 3, 7, 4, 7],
                     [0, 3, 7, 4, 7]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         mask = torch.tensor(
             [
@@ -238,7 +272,9 @@ class MaskedMeanPoolingTestCase(unittest.TestCase):
                     [0, 1, 1, 1, 1],
                     [0, 0, 0, 1, 1]
                 ]
-            ], dtype=torch.uint8)
+            ],
+            dtype=torch.uint8
+        )
 
         dim = -2
 
@@ -246,7 +282,9 @@ class MaskedMeanPoolingTestCase(unittest.TestCase):
             [
                 [0, 2, 7, (4 + 1) / 2., (1 + 3 + 7) / 3.],
                 [9, 3, (2 + 7) / 2., (7 + 4 + 4) / 3., (3 + 7 + 7) / 3.]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.masked_mean_pooling(data_tensor, mask, dim)
 
@@ -265,13 +303,17 @@ class MaskedMeanPoolingTestCase(unittest.TestCase):
                     [0, 3, 7, 4, 7],
                     [0, 3, 7, 4, 7]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         mask = torch.tensor(
             [
                 [1, 1, 0],
                 [1, 0, 0]
-            ], dtype=torch.uint8)
+            ],
+            dtype=torch.uint8
+        )
 
         dim = -2
 
@@ -279,7 +321,9 @@ class MaskedMeanPoolingTestCase(unittest.TestCase):
             [
                 [(8 + 0) / 2, (4 + 2) / 2, (0 + 6) / 2, (0 + 1) / 2, (1 + 3) / 2],
                 [9, 7, 2, 7, 3]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.masked_mean_pooling(data_tensor, mask, dim)
 
@@ -301,7 +345,9 @@ class GetFirstNonMaskedElementTestCase(unittest.TestCase):
                     [2, 3, 4, 2, 1],
                     [0, 3, 7, 4, 7]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         lengths_tensor = torch.tensor(
             [
@@ -317,7 +363,9 @@ class GetFirstNonMaskedElementTestCase(unittest.TestCase):
             [
                 [8, 0, 0],
                 [9, 2, 0]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.get_first_non_masked_element(data_tensor, lengths_tensor, dim, is_end_padded)
 
@@ -336,7 +384,9 @@ class GetFirstNonMaskedElementTestCase(unittest.TestCase):
                     [2, 3, 4, 2, 1],
                     [0, 3, 7, 4, 7]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         lengths_tensor = torch.tensor([1, 2])
 
@@ -347,7 +397,9 @@ class GetFirstNonMaskedElementTestCase(unittest.TestCase):
             [
                 [8, 4, 0, 0, 1],
                 [9, 7, 2, 7, 3]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.get_first_non_masked_element(data_tensor, lengths_tensor, dim, is_end_padded)
 
@@ -366,7 +418,9 @@ class GetFirstNonMaskedElementTestCase(unittest.TestCase):
                     [2, 3, 4, 2, 1],
                     [0, 3, 7, 4, 7]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         lengths_tensor = torch.tensor(
             [
@@ -382,7 +436,9 @@ class GetFirstNonMaskedElementTestCase(unittest.TestCase):
             [
                 [1, 1, 7],
                 [7, 4, 3]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.get_first_non_masked_element(data_tensor, lengths_tensor, dim, is_end_padded)
 
@@ -401,7 +457,9 @@ class GetFirstNonMaskedElementTestCase(unittest.TestCase):
                     [2, 3, 4, 2, 1],
                     [0, 3, 7, 4, 7]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         lengths_tensor = torch.tensor([1, 2])
 
@@ -412,7 +470,9 @@ class GetFirstNonMaskedElementTestCase(unittest.TestCase):
             [
                 [0, 3, 7, 4, 7],
                 [2, 3, 4, 2, 1]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.get_first_non_masked_element(data_tensor, lengths_tensor, dim, is_end_padded)
 
@@ -434,7 +494,9 @@ class GetLastNonMaskedElementTestCase(unittest.TestCase):
                     [2, 3, 4, 2, 1],
                     [0, 3, 7, 4, 7]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         lengths_tensor = torch.tensor(
             [
@@ -450,7 +512,9 @@ class GetLastNonMaskedElementTestCase(unittest.TestCase):
             [
                 [8, 2, 7],
                 [7, 4, 4]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.get_last_non_masked_element(data_tensor, lengths_tensor, dim, is_end_padded)
 
@@ -469,7 +533,9 @@ class GetLastNonMaskedElementTestCase(unittest.TestCase):
                     [2, 3, 4, 2, 1],
                     [0, 3, 7, 4, 7]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         lengths_tensor = torch.tensor([1, 2])
 
@@ -480,7 +546,9 @@ class GetLastNonMaskedElementTestCase(unittest.TestCase):
             [
                 [8, 4, 0, 0, 1],
                 [2, 3, 4, 2, 1]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.get_last_non_masked_element(data_tensor, lengths_tensor, dim, is_end_padded)
 
@@ -500,7 +568,9 @@ class GetLastNonMaskedElementTestCase(unittest.TestCase):
                     [0, 3, 7, 4, 7]
                 ]
 
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         lengths_tensor = torch.tensor(
             [
@@ -516,7 +586,9 @@ class GetLastNonMaskedElementTestCase(unittest.TestCase):
             [
                 [1, 3, 7],
                 [3, 1, 7]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.get_last_non_masked_element(data_tensor, lengths_tensor, dim, is_end_padded)
 
@@ -535,7 +607,9 @@ class GetLastNonMaskedElementTestCase(unittest.TestCase):
                     [2, 3, 4, 2, 1],
                     [0, 3, 7, 4, 7]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         lengths_tensor = torch.tensor([1, 2])
 
@@ -546,7 +620,9 @@ class GetLastNonMaskedElementTestCase(unittest.TestCase):
             [
                 [0, 3, 7, 4, 7],
                 [0, 3, 7, 4, 7]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.get_last_non_masked_element(data_tensor, lengths_tensor, dim, is_end_padded)
 
@@ -568,7 +644,9 @@ class GetLastStateOfRNNTestCase(unittest.TestCase):
                     [2, 3, 4, 2, 1, 9],
                     [0, 3, 7, 4, 7, 1]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         batch_sequence_lengths = torch.tensor([1, 2])
 
@@ -579,7 +657,9 @@ class GetLastStateOfRNNTestCase(unittest.TestCase):
             [
                 [8, 4, 0, 0, 1, 2],
                 [2, 3, 4, 2, 1, 9]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.get_last_state_of_rnn(rnn_out, batch_sequence_lengths, is_bidirectional, is_end_padded)
 
@@ -598,7 +678,9 @@ class GetLastStateOfRNNTestCase(unittest.TestCase):
                     [2, 3, 4, 2, 1, 9],
                     [0, 3, 7, 4, 7, 1]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         batch_sequence_lengths = torch.tensor([1, 2])
 
@@ -609,7 +691,9 @@ class GetLastStateOfRNNTestCase(unittest.TestCase):
             [
                 [0, 3, 7, 4, 7, 4],
                 [0, 3, 7, 4, 7, 1]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.get_last_state_of_rnn(rnn_out, batch_sequence_lengths, is_bidirectional, is_end_padded)
 
@@ -628,7 +712,9 @@ class GetLastStateOfRNNTestCase(unittest.TestCase):
                     [2, 3, 4, 2, 1, 9],
                     [0, 3, 7, 4, 7, 1]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         batch_sequence_lengths = torch.tensor([1, 2])
 
@@ -639,7 +725,9 @@ class GetLastStateOfRNNTestCase(unittest.TestCase):
             [
                 [8, 4, 0, 0, 1, 2],
                 [2, 3, 4, 7, 3, 8]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.get_last_state_of_rnn(rnn_out, batch_sequence_lengths, is_bidirectional, is_end_padded)
 
@@ -658,7 +746,9 @@ class GetLastStateOfRNNTestCase(unittest.TestCase):
                     [2, 3, 4, 2, 1, 9],
                     [0, 3, 7, 4, 7, 1]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         batch_sequence_lengths = torch.tensor([1, 2])
 
@@ -669,7 +759,9 @@ class GetLastStateOfRNNTestCase(unittest.TestCase):
             [
                 [0, 3, 7, 4, 7, 4],
                 [0, 3, 7, 2, 1, 9]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.get_last_state_of_rnn(rnn_out, batch_sequence_lengths, is_bidirectional, is_end_padded)
 
@@ -691,7 +783,9 @@ class PadTestCase(unittest.TestCase):
                     [2, 3, 4, 2, 1, 9],
                     [0, 3, 7, 4, 7, 1]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         pad_size = 2
         dim = 2
@@ -709,7 +803,9 @@ class PadTestCase(unittest.TestCase):
                     [0, 0, 2, 3, 4, 2, 1, 9],
                     [0, 0, 0, 3, 7, 4, 7, 1]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.pad(data_tensor, pad_size, dim, pad_at_end)
 
@@ -728,7 +824,9 @@ class PadTestCase(unittest.TestCase):
                     [2, 3, 4, 2, 1, 9],
                     [0, 3, 7, 4, 7, 1]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         pad_size = 2
         dim = 2
@@ -746,7 +844,9 @@ class PadTestCase(unittest.TestCase):
                     [2, 3, 4, 2, 1, 9, 0, 0],
                     [0, 3, 7, 4, 7, 1, 0, 0]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.pad(data_tensor, pad_size, dim, pad_at_end)
 
@@ -765,7 +865,9 @@ class PadTestCase(unittest.TestCase):
                     [2, 3, 4, 2, 1, 9],
                     [0, 3, 7, 4, 7, 1]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         pad_size = 2
         dim = 1
@@ -787,7 +889,9 @@ class PadTestCase(unittest.TestCase):
                     [2, 3, 4, 2, 1, 9],
                     [0, 3, 7, 4, 7, 1]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.pad(data_tensor, pad_size, dim, pad_at_end)
 
@@ -806,7 +910,9 @@ class PadTestCase(unittest.TestCase):
                     [2, 3, 4, 2, 1, 9],
                     [0, 3, 7, 4, 7, 1]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         pad_size = 2
         dim = 1
@@ -828,7 +934,9 @@ class PadTestCase(unittest.TestCase):
                     [0, 0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0, 0]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         result = pwF.pad(data_tensor, pad_size, dim, pad_at_end)
 
@@ -851,7 +959,9 @@ class SameDropoutTestCase(unittest.TestCase):
                     [9, 7, 2, 7, 3, 8],
                     [8, 4, 0, 0, 1, 2]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         dropout_p = 0.9
         dim = 0
@@ -875,7 +985,9 @@ class SameDropoutTestCase(unittest.TestCase):
                     [9, 7, 2, 7, 3, 8],
                     [8, 4, 0, 0, 1, 2]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         dropout_p = 0.9
         dim = 0
@@ -902,7 +1014,9 @@ class SubTensorDropoutTestCase(unittest.TestCase):
                     [9, 7, 2, 7, 3, 8],
                     [8, 4, 0, 0, 1, 2]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         dropout_p = 0.0000001
         dim = 0
@@ -926,7 +1040,9 @@ class SubTensorDropoutTestCase(unittest.TestCase):
                     [9, 7, 2, 7, 3, 8],
                     [8, 4, 0, 0, 1, 2]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         dropout_p = 0.9999999
         dim = 0
@@ -950,7 +1066,9 @@ class SubTensorDropoutTestCase(unittest.TestCase):
                     [9, 7, 2, 7, 3, 8],
                     [8, 4, 0, 0, 1, 2]
                 ]
-            ], dtype=torch.float32)
+            ],
+            dtype=torch.float32
+        )
 
         dropout_p = 0.9
         dim = 0

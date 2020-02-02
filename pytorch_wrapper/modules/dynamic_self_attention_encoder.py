@@ -35,10 +35,12 @@ class DynamicSelfAttentionEncoder(nn.Module):
         self._att_scores_nb = att_scores_nb
         self._att_iterations = att_iterations
         self._projection_size = projection_size
-        self._projection_layer = MLP(time_step_size,
-                                     num_hidden_layers=0,
-                                     output_size=att_scores_nb * projection_size,
-                                     output_activation=projection_activation)
+        self._projection_layer = MLP(
+            time_step_size,
+            num_hidden_layers=0,
+            output_size=att_scores_nb * projection_size,
+            output_activation=projection_activation
+        )
 
         self._attended_representation_activation = attended_representation_activation()
         self._is_end_padded = is_end_padded
@@ -49,29 +51,51 @@ class DynamicSelfAttentionEncoder(nn.Module):
         :param batch_sequence_lengths: 1D Tensor (batch_size) containing the lengths of the sequences.
         :return: 2D Tensor (batch_size, projection_size * att_scores_nb) containing the encodings.
         """
-        projected_batch_sequences = self._projection_layer(batch_sequences).view(batch_sequences.shape[0],
-                                                                                 batch_sequences.shape[1],
-                                                                                 self._att_scores_nb,
-                                                                                 self._projection_size)
+        projected_batch_sequences = self._projection_layer(batch_sequences).view(
+            batch_sequences.shape[0],
+            batch_sequences.shape[1],
+            self._att_scores_nb,
+            self._projection_size
+        )
 
-        att_scores_matrix = torch.zeros(list(batch_sequences.shape[:-1]) + [self._att_scores_nb],
-                                        device=batch_sequences.device)
+        att_scores_matrix = torch.zeros(
+            list(batch_sequences.shape[:-1]) + [self._att_scores_nb],
+            device=batch_sequences.device
+        )
 
-        mask = pwF.create_mask_from_length(length_tensor=batch_sequence_lengths, mask_size=batch_sequences.shape[1],
-                                           zeros_at_end=self._is_end_padded)
-        mask = mask.unsqueeze(-1).expand(batch_sequences.shape[0], batch_sequences.shape[1], self._att_scores_nb)
+        mask = pwF.create_mask_from_length(
+            length_tensor=batch_sequence_lengths,
+            mask_size=batch_sequences.shape[1],
+            zeros_at_end=self._is_end_padded
+        )
+        mask = mask.unsqueeze(-1).expand(
+            batch_sequences.shape[0],
+            batch_sequences.shape[1],
+            self._att_scores_nb
+        )
 
         for it in range(self._att_iterations):
             att_scores_matrix_sm = att_scores_matrix.masked_fill(mask == 0, -1e9)
             att_scores_matrix_sm = F.softmax(att_scores_matrix_sm, dim=-2).unsqueeze(-1)
             z = self._attended_representation_activation(
-                torch.sum(projected_batch_sequences * att_scores_matrix_sm, dim=1, keepdim=True))
+                torch.sum(
+                    projected_batch_sequences * att_scores_matrix_sm,
+                    dim=1,
+                    keepdim=True
+                )
+            )
 
             if it < self._att_iterations - 1:
-                z = z.expand(batch_sequences.shape[0],
-                             batch_sequences.shape[1],
-                             self._att_scores_nb,
-                             self._projection_size)
-                att_scores_matrix += torch.sum(z * projected_batch_sequences, dim=-1, keepdim=False)
+                z = z.expand(
+                    batch_sequences.shape[0],
+                    batch_sequences.shape[1],
+                    self._att_scores_nb,
+                    self._projection_size
+                )
+                att_scores_matrix += torch.sum(
+                    z * projected_batch_sequences,
+                    dim=-1,
+                    keepdim=False
+                )
 
         return z.view(batch_sequences.shape[0], -1)

@@ -10,18 +10,18 @@ from pytorch_wrapper import modules
 class ResidualTestCase(unittest.TestCase):
 
     def test_execution(self):
-        x = torch.tensor([
-            [1, 2, 3],
-            [6, 4, 3],
-            [1, 2, 3]
-        ], dtype=torch.float32
+        x = torch.tensor(
+            [[1, 2, 3],
+             [6, 4, 3],
+             [1, 2, 3]],
+            dtype=torch.float32
         )
 
-        mocked_return_value = torch.tensor([
-            [1, 2, 3],
-            [6, 4, 3],
-            [1, 2, 3]
-        ], dtype=torch.float32
+        mocked_return_value = torch.tensor(
+            [[1, 2, 3],
+             [6, 4, 3],
+             [1, 2, 3]],
+            dtype=torch.float32
         )
 
         correct = x + mocked_return_value

@@ -156,12 +156,20 @@ def get_last_state_of_rnn(rnn_out, batch_sequence_lengths, is_bidirectional, is_
     :return: 2D Tensor (batch_size, time_step_size or time_step_size * 2) containing the last state(s) of the RNN.
     """
 
-    out = get_last_non_masked_element(rnn_out, lengths_tensor=batch_sequence_lengths, dim=1,
-                                      is_end_padded=is_end_padded)
+    out = get_last_non_masked_element(
+        rnn_out,
+        lengths_tensor=batch_sequence_lengths,
+        dim=1,
+        is_end_padded=is_end_padded
+    )
 
     if is_bidirectional:
-        backward_out = get_first_non_masked_element(rnn_out, lengths_tensor=batch_sequence_lengths, dim=1,
-                                                    is_end_padded=is_end_padded)
+        backward_out = get_first_non_masked_element(
+            rnn_out,
+            lengths_tensor=batch_sequence_lengths,
+            dim=1,
+            is_end_padded=is_end_padded
+        )
 
         out = torch.cat([out[:, :rnn_out.shape[2] // 2], backward_out[:, rnn_out.shape[2] // 2:]], dim=1)
 

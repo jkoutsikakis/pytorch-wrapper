@@ -649,7 +649,8 @@ class _Trainer(object):
                 current_dataset_results = self.training_context['system'].evaluate(
                     self.evaluation_data_loaders[current_dataset_name],
                     self.evaluators,
-                    self.batch_input_key)
+                    self.batch_input_key
+                )
                 current_results[current_dataset_name] = current_dataset_results
                 for evaluator_name in self.evaluators:
                     auto_tqdm.write(str(current_results[current_dataset_name][evaluator_name]))

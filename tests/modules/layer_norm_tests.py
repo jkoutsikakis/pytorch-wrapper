@@ -7,13 +7,14 @@ from pytorch_wrapper import modules
 class LayerNormTestCase(unittest.TestCase):
 
     def test_execution(self):
-        batch_sequences = torch.tensor([
-            [[1, 2, 3],
-             [4, 5, 6],
-             [1, 2, 3]],
-            [[1, 2, 3],
-             [6, 4, 3],
-             [1, 2, 3]]], dtype=torch.float32
+        batch_sequences = torch.tensor(
+            [[[1, 2, 3],
+              [4, 5, 6],
+              [1, 2, 3]],
+             [[1, 2, 3],
+              [6, 4, 3],
+              [1, 2, 3]]],
+            dtype=torch.float32
         )
 
         model = modules.LayerNorm(batch_sequences.shape[-1])

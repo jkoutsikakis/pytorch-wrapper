@@ -27,11 +27,19 @@ class TransformerEncoder(nn.Module):
             self._pos_emb = None
 
         for _ in range(depth):
-            cur_mlp = MLP(time_step_size,
-                          hidden_layer_size=time_step_size,
-                          hidden_activation=nn.ReLU,
-                          output_size=time_step_size)
-            cur_encoder_block = TransformerEncoderBlock(time_step_size, heads, cur_mlp, dp, is_end_padded)
+            cur_mlp = MLP(
+                time_step_size,
+                hidden_layer_size=time_step_size,
+                hidden_activation=nn.ReLU,
+                output_size=time_step_size
+            )
+            cur_encoder_block = TransformerEncoderBlock(
+                time_step_size,
+                heads,
+                cur_mlp,
+                dp,
+                is_end_padded
+            )
             self._module_list.append(cur_encoder_block)
 
         self._module_list = nn.ModuleList(self._module_list)
