@@ -43,7 +43,8 @@ class EarlyStoppingCriterionCallbackCallbackTestCase(unittest.TestCase):
             'system': MagicMock(),
             '_current_epoch': -1,
             'stop_training': False,
-            '_results_history': []
+            '_results_history': [],
+            '_verbose': False
         }
 
         training_context['system'].save_model_state = MagicMock()

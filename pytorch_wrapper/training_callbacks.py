@@ -153,7 +153,8 @@ class EarlyStoppingCriterionCallback(StoppingCriterionCallback):
             training_context['stop_training'] = True
 
     def on_training_end(self, training_context):
-        tqdm.write("Epoch chosen: %d" % self._best_epoch)
+        if training_context['_verbose']:
+            tqdm.write("Epoch chosen: %d" % self._best_epoch)
         training_context['system'].load_model_state(self._best_state_filepath)
 
 

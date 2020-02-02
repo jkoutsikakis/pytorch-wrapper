@@ -116,7 +116,7 @@ class SystemPredictTestCase(unittest.TestCase):
             {'input': (torch.ones((1, 2)) * -2)}
         ]
 
-        out = system.predict(data_loader=data_loader)
+        out = system.predict(data_loader=data_loader, verbose=False)
 
         np.testing.assert_almost_equal(out['outputs'], [8, 0], 5)
 
@@ -132,7 +132,7 @@ class SystemPredictTestCase(unittest.TestCase):
             {'input': (torch.ones((1, 2)) * -2)}
         ]
 
-        out = system.predict(data_loader=data_loader, perform_last_activation=False)
+        out = system.predict(data_loader=data_loader, perform_last_activation=False, verbose=False)
 
         np.testing.assert_almost_equal(out['outputs'], [8, -8], 5)
 
@@ -148,7 +148,7 @@ class SystemPredictTestCase(unittest.TestCase):
             {'input_test': (torch.ones((1, 2)) * -2)}
         ]
 
-        out = system.predict(data_loader=data_loader, batch_input_key='input_test')
+        out = system.predict(data_loader=data_loader, batch_input_key='input_test', verbose=False)
 
         np.testing.assert_almost_equal(out['outputs'], [8, 0], 5)
 
@@ -164,7 +164,7 @@ class SystemPredictTestCase(unittest.TestCase):
             {'input': (torch.ones((1, 2)) * -2)}
         ]
 
-        out = system.predict(data_loader=data_loader, model_output_key='out')
+        out = system.predict(data_loader=data_loader, model_output_key='out', verbose=False)
 
         np.testing.assert_almost_equal(out['outputs'], [8, 0], 5)
 
@@ -180,7 +180,7 @@ class SystemPredictTestCase(unittest.TestCase):
             {'input': (torch.ones((1, 2)) * -2), 'id': [1]}
         ]
 
-        out = system.predict(data_loader=data_loader, batch_id_key='id')
+        out = system.predict(data_loader=data_loader, batch_id_key='id', verbose=False)
 
         np.testing.assert_almost_equal(out['outputs'], [8, 0], 5)
         self.assertListEqual(out['id'], [0, 1])
@@ -197,7 +197,7 @@ class SystemPredictTestCase(unittest.TestCase):
             {'input': (torch.ones((1, 2)) * -2), 'id': ['id_1']}
         ]
 
-        out = system.predict(data_loader=data_loader, batch_id_key='id')
+        out = system.predict(data_loader=data_loader, batch_id_key='id', verbose=False)
 
         np.testing.assert_almost_equal(out['outputs'], [8, 0], 5)
         self.assertListEqual(out['id'], ['id_0', 'id_1'])
@@ -272,7 +272,7 @@ class SystemEvaluateTestCase(unittest.TestCase):
             {'input': (torch.ones((1, 2)) * -2)}
         ]
 
-        results = self.system.evaluate(data_loader, self.evaluators)
+        results = self.system.evaluate(data_loader, self.evaluators, verbose=False)
 
         self.assertFalse(self.model_one_input.training)
 
@@ -293,7 +293,7 @@ class SystemEvaluateTestCase(unittest.TestCase):
             {'input2': (torch.ones((1, 2)) * -2)}
         ]
 
-        results = self.system.evaluate(data_loader, self.evaluators, batch_input_key='input2')
+        results = self.system.evaluate(data_loader, self.evaluators, batch_input_key='input2', verbose=False)
 
         self.assertFalse(self.model_one_input.training)
 
@@ -323,7 +323,7 @@ class SystemPurePredictTestCase(unittest.TestCase):
             {'input': (torch.ones((1, 2)) * -2)}
         ]
 
-        pure_predictions = system.pure_predict(data_loader=data_loader)
+        pure_predictions = system.pure_predict(data_loader=data_loader, verbose=False)
 
         self.assertEqual(len(pure_predictions['batch_list']), 2)
         self.assertEqual(len(pure_predictions['batch_list']), len(pure_predictions['output_list']))
@@ -353,7 +353,7 @@ class SystemPurePredictTestCase(unittest.TestCase):
             {'input_test': (torch.ones((1, 2)) * -2)}
         ]
 
-        pure_predictions = system.pure_predict(data_loader=data_loader, batch_input_key='input_test')
+        pure_predictions = system.pure_predict(data_loader=data_loader, batch_input_key='input_test', verbose=False)
 
         self.assertEqual(len(pure_predictions['batch_list']), 2)
         self.assertEqual(len(pure_predictions['batch_list']), len(pure_predictions['output_list']))
@@ -383,7 +383,7 @@ class SystemPurePredictTestCase(unittest.TestCase):
             {'input': (torch.ones((1, 2)) * -2)}
         ]
 
-        pure_predictions = system.pure_predict(data_loader=data_loader, keep_batches=False)
+        pure_predictions = system.pure_predict(data_loader=data_loader, keep_batches=False, verbose=False)
 
         self.assertEqual(len(pure_predictions['output_list']), 2)
         self.assertFalse('batch_list' in pure_predictions)
@@ -461,6 +461,7 @@ class SystemTrainTestCase(unittest.TestCase):
         ])
         self.callbacks = [self.callback]
         self.gradient_accumulation_steps = 1
+        self.verbose = False
 
         self.trainer = system_module._Trainer(
             self.system,
@@ -471,7 +472,8 @@ class SystemTrainTestCase(unittest.TestCase):
             self.batch_input_key,
             self.evaluators,
             self.callbacks,
-            self.gradient_accumulation_steps
+            self.gradient_accumulation_steps,
+            self.verbose
         )
 
     def test_train_epoch(self):
