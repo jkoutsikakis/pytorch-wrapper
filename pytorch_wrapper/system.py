@@ -148,6 +148,56 @@ class System(object):
 
         return trainer.run()
 
+    def predict_on_multi_gpus(self,
+                              data_loader,
+                              perform_last_activation=True,
+                              batch_id_key=None,
+                              batch_input_key='input',
+                              model_output_key=None,
+                              multi_gpu_device_ids=None,
+                              multi_gpu_output_device=None,
+                              multi_gpu_dim=0):
+        """
+        Computes the outputs of the model on a dataset using multiple GPUs. At the end of training the model is moved
+        back to the device it was on at the beginning.
+
+        :param data_loader: DataLoader object that generates batches of data. Each batch must be a Dict that contains at
+            least a Tensor or a list/tuple of Tensors containing the input(s) of the model(key=`batch_input_key`).
+        :param perform_last_activation: Whether to perform the last_activation.
+        :param batch_id_key: Key where the dict returned by the dataloader contains the ids of the examples. Leave None
+            if there are no ids.
+        :param batch_input_key: Key where the dict returned by the dataloader contains the input of the model.
+        :param model_output_key: Key where the dict returned by the model contains the actual predictions. Leave None
+            if the model returns only the predictions.
+        :param multi_gpu_device_ids: CUDA devices used during training (default: all devices).
+        :param multi_gpu_output_device: Device location of output (default: device_ids[0]).
+        :param multi_gpu_dim: Int dimension on which to split each batch.
+        :return: Dict containing a list of predictions (key=`outputs`) and a list of ids (key=`batch_id_key`) if
+            provided by the dataloader.
+        """
+
+        assert torch.cuda.is_available(), 'No CUDA device found!'
+
+        self.model = nn.DataParallel(self.model, multi_gpu_device_ids, multi_gpu_output_device, multi_gpu_dim)
+        temp_device = self._device
+        if multi_gpu_output_device is not None:
+            self.to(multi_gpu_output_device)
+        else:
+            self.to(torch.device('cuda'))
+
+        predictions = self.predict(
+            data_loader,
+            perform_last_activation,
+            batch_id_key,
+            batch_input_key,
+            model_output_key
+        )
+
+        self.model = self.model.module
+        self.to(temp_device)
+
+        return predictions
+
     def predict(self,
                 data_loader,
                 perform_last_activation=True,
@@ -195,6 +245,46 @@ class System(object):
             return {batch_id_key: ids_list, 'outputs': output_list}
         else:
             return {'outputs': output_list}
+
+    def pure_predict_on_multi_gpus(self,
+                                   data_loader,
+                                   batch_input_key='input',
+                                   keep_batches=True,
+                                   multi_gpu_device_ids=None,
+                                   multi_gpu_output_device=None,
+                                   multi_gpu_dim=0):
+        """
+        Computes the output of the model on a dataset using multiple GPUs. At the end of training the model is moved
+        back to the device it was on at the beginning.
+
+        :param data_loader: DataLoader object that generates batches of data. Each batch must be a Dict that contains at
+            least a Tensor or a list/tuple of Tensors containing the input(s) of the model(key=`batch_input_key`).
+        :param batch_input_key: The key of the batches returned by the data_loader that contains the input of the
+            model.
+        :param keep_batches: If set to True then the method also returns a list of the batches returned by the
+            dataloader.
+        :param multi_gpu_device_ids: CUDA devices used during training (default: all devices).
+        :param multi_gpu_output_device: Device location of output (default: device_ids[0]).
+        :param multi_gpu_dim: Int dimension on which to split each batch.
+        :return: Dict containing a list of batched model outputs (key=`output_list`) and a list of batches as returned
+            by the dataloader (key=`batch_list`) if keep_batches is set to True.
+        """
+
+        assert torch.cuda.is_available(), 'No CUDA device found!'
+
+        self.model = nn.DataParallel(self.model, multi_gpu_device_ids, multi_gpu_output_device, multi_gpu_dim)
+        temp_device = self._device
+        if multi_gpu_output_device is not None:
+            self.to(multi_gpu_output_device)
+        else:
+            self.to(torch.device('cuda'))
+
+        results = self.pure_predict(data_loader, batch_input_key, keep_batches)
+
+        self.model = self.model.module
+        self.to(temp_device)
+
+        return results
 
     def pure_predict(self, data_loader, batch_input_key='input', keep_batches=True):
         """
