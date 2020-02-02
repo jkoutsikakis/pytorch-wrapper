@@ -8,20 +8,23 @@ from pytorch_wrapper import modules
 class SequenceBasicCNNBlockTestCase(unittest.TestCase):
 
     def test_execution(self):
-        batch_sequences = torch.tensor([
-            [[1, 2, 3],
-             [4, 5, 6],
-             [1, 2, 3]],
-            [[1, 2, 3],
-             [6, 4, 3],
-             [1, 2, 3]]], dtype=torch.float32
+        batch_sequences = torch.tensor(
+            [[[1, 2, 3],
+              [4, 5, 6],
+              [1, 2, 3]],
+             [[1, 2, 3],
+              [6, 4, 3],
+              [1, 2, 3]]],
+            dtype=torch.float32
         )
 
-        model = modules.SequenceBasicCNNBlock(batch_sequences.shape[-1],
-                                              kernel_height=3,
-                                              out_channels=10,
-                                              activation=nn.ReLU,
-                                              dp=0.5)
+        model = modules.SequenceBasicCNNBlock(
+            batch_sequences.shape[-1],
+            kernel_height=3,
+            out_channels=10,
+            activation=nn.ReLU,
+            dp=0.5
+        )
 
         res = model(batch_sequences)
         res.sum().backward()
@@ -31,4 +34,3 @@ class SequenceBasicCNNBlockTestCase(unittest.TestCase):
         res_shape = list(res.shape)
 
         self.assertListEqual(res_shape, correct_shape)
-

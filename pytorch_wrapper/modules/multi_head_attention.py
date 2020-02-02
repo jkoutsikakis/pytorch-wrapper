@@ -122,4 +122,7 @@ class MultiHeadAttention(nn.Module):
         mask = pwF.create_mask_from_length(q_sequence_lengths, q_len, self._is_end_padded).unsqueeze(-1).unsqueeze(-1)
         attended = attended.masked_fill(mask == 0, 0)
 
-        return {'output': attended.view(bs, q_len, self._v_time_step_size), 'att_scores': scores}
+        return {
+            'output': attended.view(bs, q_len, self._v_time_step_size),
+            'att_scores': scores
+        }

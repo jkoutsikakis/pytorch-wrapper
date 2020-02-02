@@ -168,8 +168,11 @@ class GenericPointWiseLossEvaluator(AbstractEvaluator):
         self._examples_nb += batch[self._batch_target_key].shape[0]
 
     def calculate(self):
-        return GenericEvaluatorResults(self._loss / self._examples_nb, self._label, self._score_format,
-                                       is_max_better=False)
+        return GenericEvaluatorResults(
+            self._loss / self._examples_nb,
+            self._label, self._score_format,
+            is_max_better=False
+        )
 
 
 class AccuracyEvaluator(AbstractEvaluator):
@@ -207,7 +210,12 @@ class AccuracyEvaluator(AbstractEvaluator):
         predictions = np.array(self._outputs) > self._threshold
         targets = np.array(self._targets) > self._threshold
         correct = (predictions == targets).sum()
-        return GenericEvaluatorResults(100.0 * correct / predictions.size, 'acc', '%5.2f%%', is_max_better=True)
+        return GenericEvaluatorResults(
+            100.0 * correct / predictions.size,
+            'acc',
+            '%5.2f%%',
+            is_max_better=True
+        )
 
 
 class MultiClassAccuracyEvaluator(AbstractEvaluator):
@@ -240,7 +248,12 @@ class MultiClassAccuracyEvaluator(AbstractEvaluator):
     def calculate(self):
         predictions = np.array(self._outputs).argmax(axis=-1)
         correct = (predictions == self._targets).sum()
-        return GenericEvaluatorResults(100.0 * correct / predictions.shape[0], 'acc', '%5.2f%%', is_max_better=True)
+        return GenericEvaluatorResults(
+            100.0 * correct / predictions.shape[0],
+            'acc',
+            '%5.2f%%',
+            is_max_better=True
+        )
 
 
 class AUROCEvaluator(AbstractEvaluator):

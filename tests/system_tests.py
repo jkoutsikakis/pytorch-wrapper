@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, patch
 from torch import nn
 from collections import OrderedDict
 
-from pytorch_wrapper import system
+from pytorch_wrapper import system as system_module
 from pytorch_wrapper.system import System
 
 
@@ -327,10 +327,16 @@ class SystemPurePredictTestCase(unittest.TestCase):
 
         self.assertEqual(len(pure_predictions['batch_list']), 2)
         self.assertEqual(len(pure_predictions['batch_list']), len(pure_predictions['output_list']))
-        np.testing.assert_almost_equal(pure_predictions['batch_list'][0]['input'].tolist(),
-                                       data_loader[0]['input'].tolist(), 5)
-        np.testing.assert_almost_equal(pure_predictions['batch_list'][1]['input'].tolist(),
-                                       data_loader[1]['input'].tolist(), 5)
+        np.testing.assert_almost_equal(
+            pure_predictions['batch_list'][0]['input'].tolist(),
+            data_loader[0]['input'].tolist(),
+            5
+        )
+        np.testing.assert_almost_equal(
+            pure_predictions['batch_list'][1]['input'].tolist(),
+            data_loader[1]['input'].tolist(),
+            5
+        )
 
         self.assertAlmostEqual(pure_predictions['output_list'][0].item(), 8., 5)
         self.assertAlmostEqual(pure_predictions['output_list'][1].item(), -8., 5)
@@ -351,10 +357,16 @@ class SystemPurePredictTestCase(unittest.TestCase):
 
         self.assertEqual(len(pure_predictions['batch_list']), 2)
         self.assertEqual(len(pure_predictions['batch_list']), len(pure_predictions['output_list']))
-        np.testing.assert_almost_equal(pure_predictions['batch_list'][0]['input_test'].tolist(),
-                                       data_loader[0]['input_test'].tolist(), 5)
-        np.testing.assert_almost_equal(pure_predictions['batch_list'][1]['input_test'].tolist(),
-                                       data_loader[1]['input_test'].tolist(), 5)
+        np.testing.assert_almost_equal(
+            pure_predictions['batch_list'][0]['input_test'].tolist(),
+            data_loader[0]['input_test'].tolist(),
+            5
+        )
+        np.testing.assert_almost_equal(
+            pure_predictions['batch_list'][1]['input_test'].tolist(),
+            data_loader[1]['input_test'].tolist(),
+            5
+        )
 
         self.assertAlmostEqual(pure_predictions['output_list'][0].item(), 8., 5)
         self.assertAlmostEqual(pure_predictions['output_list'][1].item(), -8., 5)
@@ -450,15 +462,17 @@ class SystemTrainTestCase(unittest.TestCase):
         self.callbacks = [self.callback]
         self.gradient_accumulation_steps = 1
 
-        self.trainer = system._Trainer(self.system,
-                                       self.loss_wrapper,
-                                       self.optimizer,
-                                       self.train_data_loader,
-                                       self.evaluation_data_loaders,
-                                       self.batch_input_key,
-                                       self.evaluators,
-                                       self.callbacks,
-                                       self.gradient_accumulation_steps)
+        self.trainer = system_module._Trainer(
+            self.system,
+            self.loss_wrapper,
+            self.optimizer,
+            self.train_data_loader,
+            self.evaluation_data_loaders,
+            self.batch_input_key,
+            self.evaluators,
+            self.callbacks,
+            self.gradient_accumulation_steps
+        )
 
     def test_train_epoch(self):
         with patch('pytorch_wrapper.system._Trainer._train_batch') as train_batch:
@@ -509,11 +523,10 @@ class SystemTrainTestCase(unittest.TestCase):
     def test_train(self):
         with patch('pytorch_wrapper.system._Trainer._train_epoch') as train_epoch, \
                 patch('pytorch_wrapper.system._Trainer._train_evaluation') as train_evaluation:
-
             ret_stop_training = MagicMock(side_effect=[False, True])
             training_context = self.trainer.training_context
             self.trainer.training_context = MagicMock()
-            self.trainer.training_context.__getitem__.side_effect = lambda key: training_context[key]\
+            self.trainer.training_context.__getitem__.side_effect = lambda key: training_context[key] \
                 if key != 'stop_training' else ret_stop_training()
 
             self.trainer.run()

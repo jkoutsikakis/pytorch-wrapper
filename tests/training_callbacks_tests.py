@@ -32,8 +32,12 @@ class EarlyStoppingCriterionCallbackCallbackTestCase(unittest.TestCase):
         evaluator_key = 'e'
         best_state_filepath = 'test_file'
 
-        callback = EarlyStoppingCriterionCallback(patience, evaluation_data_loader_key, evaluator_key,
-                                                  best_state_filepath)
+        callback = EarlyStoppingCriterionCallback(
+            patience,
+            evaluation_data_loader_key,
+            evaluator_key,
+            best_state_filepath
+        )
 
         training_context = {
             'system': MagicMock(),
@@ -61,4 +65,3 @@ class EarlyStoppingCriterionCallbackCallbackTestCase(unittest.TestCase):
         self.assertTrue(training_context['stop_training'])
         self.assertEqual(training_context['system'].save_model_state.call_count, 3)
         training_context['system'].load_model_state.assert_called_once()
-

@@ -44,10 +44,12 @@ class GenericPointWiseLossEvaluatorTestCase(unittest.TestCase):
         loss_wrapper = MagicMock()
         loss_wrapper.calculate_loss = MagicMock(return_value=mocked_loss)
 
-        evaluator = evaluators.GenericPointWiseLossEvaluator(loss_wrapper,
-                                                             label='loss',
-                                                             score_format='%f',
-                                                             batch_target_key='target')
+        evaluator = evaluators.GenericPointWiseLossEvaluator(
+            loss_wrapper,
+            label='loss',
+            score_format='%f',
+            batch_target_key='target'
+        )
 
         output = MagicMock()
         batch = {'target': MagicMock()}
@@ -64,9 +66,11 @@ class GenericPointWiseLossEvaluatorTestCase(unittest.TestCase):
 class AccuracyEvaluatorTestCase(unittest.TestCase):
 
     def test_correct_score_calculation_binary(self):
-        evaluator = evaluators.AccuracyEvaluator(threshold=0.5,
-                                                 model_output_key=None,
-                                                 batch_target_key='target')
+        evaluator = evaluators.AccuracyEvaluator(
+            threshold=0.5,
+            model_output_key=None,
+            batch_target_key='target'
+        )
 
         output = torch.tensor([0.9, 0.2, 0.7, 0.4], dtype=torch.float32)
         batch = {'target': torch.tensor([1, 1, 0, 0], dtype=torch.float32)}
@@ -81,9 +85,11 @@ class AccuracyEvaluatorTestCase(unittest.TestCase):
         self.assertAlmostEqual(res.score, 100 * 3. / 7)
 
     def test_correct_score_calculation_multi_label(self):
-        evaluator = evaluators.AccuracyEvaluator(threshold=0.5,
-                                                 model_output_key=None,
-                                                 batch_target_key='target')
+        evaluator = evaluators.AccuracyEvaluator(
+            threshold=0.5,
+            model_output_key=None,
+            batch_target_key='target'
+        )
 
         output = torch.tensor([[0.7, 0.4], [0.8, 0.3], [0.7, 0.6], [0.2, 0.8]], dtype=torch.float32)
         batch = {'target': torch.tensor([[1, 1], [0, 1], [1, 0], [0, 1]], dtype=torch.float32)}
@@ -101,8 +107,10 @@ class AccuracyEvaluatorTestCase(unittest.TestCase):
 class MultiClassAccuracyEvaluatorTestCase(unittest.TestCase):
 
     def test_correct_score_calculation(self):
-        evaluator = evaluators.MultiClassAccuracyEvaluator(model_output_key=None,
-                                                           batch_target_key='target')
+        evaluator = evaluators.MultiClassAccuracyEvaluator(
+            model_output_key=None,
+            batch_target_key='target'
+        )
 
         output = torch.tensor([[0.5, 0.1, 0.4], [0.3, 0.3, 0.4], [0.5, 0.5, 0.0]], dtype=torch.float32)
         batch = {'target': torch.tensor([0, 2, 2], dtype=torch.float32)}
@@ -120,9 +128,11 @@ class MultiClassAccuracyEvaluatorTestCase(unittest.TestCase):
 class AUROCEvaluatorTestCase(unittest.TestCase):
 
     def test_correct_score_calculation_binary(self):
-        evaluator = evaluators.AUROCEvaluator(model_output_key=None,
-                                              batch_target_key='target',
-                                              average='macro')
+        evaluator = evaluators.AUROCEvaluator(
+            model_output_key=None,
+            batch_target_key='target',
+            average='macro'
+        )
 
         output = torch.tensor([0.9, 0.2, 0.8, 0.3], dtype=torch.float32)
         batch = {'target': torch.tensor([1, 1, 0, 0], dtype=torch.float32)}
@@ -137,9 +147,11 @@ class AUROCEvaluatorTestCase(unittest.TestCase):
         self.assertAlmostEqual(res.score, 0.5)
 
     def test_correct_score_calculation_multi_label_macro(self):
-        evaluator = evaluators.AUROCEvaluator(model_output_key=None,
-                                              batch_target_key='target',
-                                              average='macro')
+        evaluator = evaluators.AUROCEvaluator(
+            model_output_key=None,
+            batch_target_key='target',
+            average='macro'
+        )
 
         output = torch.tensor([[0.6, 0.2], [0.7, 0.2], [0.6, 0.6], [0.3, 0.55]], dtype=torch.float32)
         batch = {'target': torch.tensor([[1, 1], [0, 1], [1, 0], [0, 1]], dtype=torch.float32)}
@@ -151,20 +163,26 @@ class AUROCEvaluatorTestCase(unittest.TestCase):
 
         res = evaluator.calculate()
 
-        lable1_score = metrics.roc_auc_score(y_score=np.array([0.6, 0.7, 0.6, 0.3, 0.6]),
-                                             y_true=np.array([1, 0, 1, 0, 1]))
+        lable1_score = metrics.roc_auc_score(
+            y_score=np.array([0.6, 0.7, 0.6, 0.3, 0.6]),
+            y_true=np.array([1, 0, 1, 0, 1])
+        )
 
-        label2_score = metrics.roc_auc_score(y_score=np.array([0.2, 0.2, 0.6, 0.55, 0.4]),
-                                             y_true=np.array([1, 1, 0, 1, 1]))
+        label2_score = metrics.roc_auc_score(
+            y_score=np.array([0.2, 0.2, 0.6, 0.55, 0.4]),
+            y_true=np.array([1, 1, 0, 1, 1])
+        )
 
         correct = (lable1_score + label2_score) / 2.
 
         self.assertAlmostEqual(res.score, correct)
 
     def test_correct_score_calculation_multi_label_micro(self):
-        evaluator = evaluators.AUROCEvaluator(model_output_key=None,
-                                              batch_target_key='target',
-                                              average='micro')
+        evaluator = evaluators.AUROCEvaluator(
+            model_output_key=None,
+            batch_target_key='target',
+            average='micro'
+        )
 
         output = torch.tensor([[0.6, 0.2], [0.7, 0.2], [0.6, 0.6], [0.3, 0.55]], dtype=torch.float32)
         batch = {'target': torch.tensor([[1, 1], [0, 1], [1, 0], [0, 1]], dtype=torch.float32)}
@@ -176,8 +194,10 @@ class AUROCEvaluatorTestCase(unittest.TestCase):
 
         res = evaluator.calculate()
 
-        correct = metrics.roc_auc_score(y_score=np.array([0.6, 0.7, 0.6, 0.3, 0.6, 0.2, 0.2, 0.6, 0.55, 0.4]),
-                                        y_true=np.array([1, 0, 1, 0, 1, 1, 1, 0, 1, 1]))
+        correct = metrics.roc_auc_score(
+            y_score=np.array([0.6, 0.7, 0.6, 0.3, 0.6, 0.2, 0.2, 0.6, 0.55, 0.4]),
+            y_true=np.array([1, 0, 1, 0, 1, 1, 1, 0, 1, 1])
+        )
 
         self.assertAlmostEqual(res.score, correct)
 
@@ -185,9 +205,11 @@ class AUROCEvaluatorTestCase(unittest.TestCase):
 class PrecisionEvaluatorTestCase(unittest.TestCase):
 
     def test_correct_score_calculation_binary(self):
-        evaluator = evaluators.PrecisionEvaluator(model_output_key=None,
-                                                  batch_target_key='target',
-                                                  average='binary')
+        evaluator = evaluators.PrecisionEvaluator(
+            model_output_key=None,
+            batch_target_key='target',
+            average='binary'
+        )
 
         output = torch.tensor([0.9, 0.2, 0.8, 0.3], dtype=torch.float32)
         batch = {'target': torch.tensor([1, 1, 0, 0], dtype=torch.float32)}
@@ -202,9 +224,11 @@ class PrecisionEvaluatorTestCase(unittest.TestCase):
         self.assertAlmostEqual(res.score, 2. / 4)
 
     def test_correct_score_calculation_multi_label_macro(self):
-        evaluator = evaluators.PrecisionEvaluator(model_output_key=None,
-                                                  batch_target_key='target',
-                                                  average='macro')
+        evaluator = evaluators.PrecisionEvaluator(
+            model_output_key=None,
+            batch_target_key='target',
+            average='macro'
+        )
 
         output = torch.tensor([[0.6, 0.2], [0.7, 0.2], [0.6, 0.6], [0.3, 0.55]], dtype=torch.float32)
         batch = {'target': torch.tensor([[1, 1], [0, 1], [1, 0], [0, 1]], dtype=torch.float32)}
@@ -216,20 +240,26 @@ class PrecisionEvaluatorTestCase(unittest.TestCase):
 
         res = evaluator.calculate()
 
-        lable1_score = metrics.precision_score(y_pred=np.array([0.6, 0.7, 0.6, 0.3, 0.6]) > 0.5,
-                                               y_true=np.array([1, 0, 1, 0, 1]))
+        lable1_score = metrics.precision_score(
+            y_pred=np.array([0.6, 0.7, 0.6, 0.3, 0.6]) > 0.5,
+            y_true=np.array([1, 0, 1, 0, 1])
+        )
 
-        label2_score = metrics.precision_score(y_pred=np.array([0.2, 0.2, 0.6, 0.55, 0.4]) > 0.5,
-                                               y_true=np.array([1, 1, 0, 1, 1]))
+        label2_score = metrics.precision_score(
+            y_pred=np.array([0.2, 0.2, 0.6, 0.55, 0.4]) > 0.5,
+            y_true=np.array([1, 1, 0, 1, 1])
+        )
 
         correct = (lable1_score + label2_score) / 2.
 
         self.assertAlmostEqual(res.score, correct)
 
     def test_correct_score_calculation_multi_label_micro(self):
-        evaluator = evaluators.PrecisionEvaluator(model_output_key=None,
-                                                  batch_target_key='target',
-                                                  average='micro')
+        evaluator = evaluators.PrecisionEvaluator(
+            model_output_key=None,
+            batch_target_key='target',
+            average='micro'
+        )
 
         output = torch.tensor([[0.6, 0.2], [0.7, 0.2], [0.6, 0.6], [0.3, 0.55]], dtype=torch.float32)
         batch = {'target': torch.tensor([[1, 1], [0, 1], [1, 0], [0, 1]], dtype=torch.float32)}
@@ -241,8 +271,10 @@ class PrecisionEvaluatorTestCase(unittest.TestCase):
 
         res = evaluator.calculate()
 
-        correct = metrics.precision_score(y_pred=np.array([0.6, 0.7, 0.6, 0.3, 0.6, 0.2, 0.2, 0.6, 0.55, 0.4]) > 0.5,
-                                          y_true=np.array([1, 0, 1, 0, 1, 1, 1, 0, 1, 1]))
+        correct = metrics.precision_score(
+            y_pred=np.array([0.6, 0.7, 0.6, 0.3, 0.6, 0.2, 0.2, 0.6, 0.55, 0.4]) > 0.5,
+            y_true=np.array([1, 0, 1, 0, 1, 1, 1, 0, 1, 1])
+        )
 
         self.assertAlmostEqual(res.score, correct)
 
@@ -250,9 +282,11 @@ class PrecisionEvaluatorTestCase(unittest.TestCase):
 class MultiClassPrecisionEvaluatorTestCase(unittest.TestCase):
 
     def test_correct_score_calculation_macro(self):
-        evaluator = evaluators.MultiClassPrecisionEvaluator(model_output_key=None,
-                                                            batch_target_key='target',
-                                                            average='macro')
+        evaluator = evaluators.MultiClassPrecisionEvaluator(
+            model_output_key=None,
+            batch_target_key='target',
+            average='macro'
+        )
 
         output = torch.tensor([[0.5, 0.1, 0.4], [0.3, 0.3, 0.4], [0.5, 0.5, 0.0]], dtype=torch.float32)
         batch = {'target': torch.tensor([0, 2, 2], dtype=torch.float32)}
@@ -269,9 +303,11 @@ class MultiClassPrecisionEvaluatorTestCase(unittest.TestCase):
         self.assertAlmostEqual(res.score, correct)
 
     def test_correct_score_calculation_micro(self):
-        evaluator = evaluators.MultiClassPrecisionEvaluator(model_output_key=None,
-                                                            batch_target_key='target',
-                                                            average='micro')
+        evaluator = evaluators.MultiClassPrecisionEvaluator(
+            model_output_key=None,
+            batch_target_key='target',
+            average='micro'
+        )
 
         output = torch.tensor([[0.5, 0.1, 0.4], [0.3, 0.3, 0.4], [0.5, 0.5, 0.0]], dtype=torch.float32)
         batch = {'target': torch.tensor([0, 2, 2], dtype=torch.float32)}
@@ -291,9 +327,11 @@ class MultiClassPrecisionEvaluatorTestCase(unittest.TestCase):
 class RecallEvaluatorTestCase(unittest.TestCase):
 
     def test_correct_score_calculation_binary(self):
-        evaluator = evaluators.RecallEvaluator(model_output_key=None,
-                                               batch_target_key='target',
-                                               average='binary')
+        evaluator = evaluators.RecallEvaluator(
+            model_output_key=None,
+            batch_target_key='target',
+            average='binary'
+        )
 
         output = torch.tensor([0.9, 0.2, 0.8, 0.3], dtype=torch.float32)
         batch = {'target': torch.tensor([1, 1, 0, 0], dtype=torch.float32)}
@@ -308,9 +346,11 @@ class RecallEvaluatorTestCase(unittest.TestCase):
         self.assertAlmostEqual(res.score, 0.5)
 
     def test_correct_score_calculation_multi_label_macro(self):
-        evaluator = evaluators.RecallEvaluator(model_output_key=None,
-                                               batch_target_key='target',
-                                               average='macro')
+        evaluator = evaluators.RecallEvaluator(
+            model_output_key=None,
+            batch_target_key='target',
+            average='macro'
+        )
 
         output = torch.tensor([[0.6, 0.2], [0.7, 0.2], [0.6, 0.6], [0.3, 0.55]], dtype=torch.float32)
         batch = {'target': torch.tensor([[1, 1], [0, 1], [1, 0], [0, 1]], dtype=torch.float32)}
@@ -322,20 +362,26 @@ class RecallEvaluatorTestCase(unittest.TestCase):
 
         res = evaluator.calculate()
 
-        lable1_score = metrics.recall_score(y_pred=np.array([0.6, 0.7, 0.6, 0.3, 0.6]) > 0.5,
-                                            y_true=np.array([1, 0, 1, 0, 1]))
+        lable1_score = metrics.recall_score(
+            y_pred=np.array([0.6, 0.7, 0.6, 0.3, 0.6]) > 0.5,
+            y_true=np.array([1, 0, 1, 0, 1])
+        )
 
-        label2_score = metrics.recall_score(y_pred=np.array([0.2, 0.2, 0.6, 0.55, 0.4]) > 0.5,
-                                            y_true=np.array([1, 1, 0, 1, 1]))
+        label2_score = metrics.recall_score(
+            y_pred=np.array([0.2, 0.2, 0.6, 0.55, 0.4]) > 0.5,
+            y_true=np.array([1, 1, 0, 1, 1])
+        )
 
         correct = (lable1_score + label2_score) / 2.
 
         self.assertAlmostEqual(res.score, correct)
 
     def test_correct_score_calculation_multi_label_micro(self):
-        evaluator = evaluators.RecallEvaluator(model_output_key=None,
-                                               batch_target_key='target',
-                                               average='micro')
+        evaluator = evaluators.RecallEvaluator(
+            model_output_key=None,
+            batch_target_key='target',
+            average='micro'
+        )
 
         output = torch.tensor([[0.6, 0.2], [0.7, 0.2], [0.6, 0.6], [0.3, 0.55]], dtype=torch.float32)
         batch = {'target': torch.tensor([[1, 1], [0, 1], [1, 0], [0, 1]], dtype=torch.float32)}
@@ -347,8 +393,10 @@ class RecallEvaluatorTestCase(unittest.TestCase):
 
         res = evaluator.calculate()
 
-        correct = metrics.recall_score(y_pred=np.array([0.6, 0.7, 0.6, 0.3, 0.6, 0.2, 0.2, 0.6, 0.55, 0.4]) > 0.5,
-                                       y_true=np.array([1, 0, 1, 0, 1, 1, 1, 0, 1, 1]))
+        correct = metrics.recall_score(
+            y_pred=np.array([0.6, 0.7, 0.6, 0.3, 0.6, 0.2, 0.2, 0.6, 0.55, 0.4]) > 0.5,
+            y_true=np.array([1, 0, 1, 0, 1, 1, 1, 0, 1, 1])
+        )
 
         self.assertAlmostEqual(res.score, correct)
 
@@ -356,9 +404,11 @@ class RecallEvaluatorTestCase(unittest.TestCase):
 class MultiClassRecallEvaluatorTestCase(unittest.TestCase):
 
     def test_correct_score_calculation_macro(self):
-        evaluator = evaluators.MultiClassRecallEvaluator(model_output_key=None,
-                                                         batch_target_key='target',
-                                                         average='macro')
+        evaluator = evaluators.MultiClassRecallEvaluator(
+            model_output_key=None,
+            batch_target_key='target',
+            average='macro'
+        )
 
         output = torch.tensor([[0.5, 0.1, 0.4], [0.3, 0.3, 0.4], [0.5, 0.5, 0.0]], dtype=torch.float32)
         batch = {'target': torch.tensor([0, 2, 2], dtype=torch.float32)}
@@ -370,14 +420,20 @@ class MultiClassRecallEvaluatorTestCase(unittest.TestCase):
 
         res = evaluator.calculate()
 
-        correct = metrics.recall_score(y_pred=np.array([0, 2, 0, 2]), y_true=np.array([0, 2, 2, 2]), average='macro')
+        correct = metrics.recall_score(
+            y_pred=np.array([0, 2, 0, 2]),
+            y_true=np.array([0, 2, 2, 2]),
+            average='macro'
+        )
 
         self.assertAlmostEqual(res.score, correct)
 
     def test_correct_score_calculation_micro(self):
-        evaluator = evaluators.MultiClassRecallEvaluator(model_output_key=None,
-                                                         batch_target_key='target',
-                                                         average='micro')
+        evaluator = evaluators.MultiClassRecallEvaluator(
+            model_output_key=None,
+            batch_target_key='target',
+            average='micro'
+        )
 
         output = torch.tensor([[0.5, 0.1, 0.4], [0.3, 0.3, 0.4], [0.5, 0.5, 0.0]], dtype=torch.float32)
         batch = {'target': torch.tensor([0, 2, 2], dtype=torch.float32)}
@@ -397,9 +453,11 @@ class MultiClassRecallEvaluatorTestCase(unittest.TestCase):
 class F1EvaluatorTestCase(unittest.TestCase):
 
     def test_correct_score_calculation_binary(self):
-        evaluator = evaluators.F1Evaluator(model_output_key=None,
-                                           batch_target_key='target',
-                                           average='binary')
+        evaluator = evaluators.F1Evaluator(
+            model_output_key=None,
+            batch_target_key='target',
+            average='binary'
+        )
 
         output = torch.tensor([0.9, 0.2, 0.8, 0.3], dtype=torch.float32)
         batch = {'target': torch.tensor([1, 1, 0, 0], dtype=torch.float32)}
@@ -414,9 +472,11 @@ class F1EvaluatorTestCase(unittest.TestCase):
         self.assertAlmostEqual(res.score, 0.5)
 
     def test_correct_score_calculation_multi_label_macro(self):
-        evaluator = evaluators.F1Evaluator(model_output_key=None,
-                                           batch_target_key='target',
-                                           average='macro')
+        evaluator = evaluators.F1Evaluator(
+            model_output_key=None,
+            batch_target_key='target',
+            average='macro'
+        )
 
         output = torch.tensor([[0.6, 0.2], [0.7, 0.2], [0.6, 0.6], [0.3, 0.55]], dtype=torch.float32)
         batch = {'target': torch.tensor([[1, 1], [0, 1], [1, 0], [0, 1]], dtype=torch.float32)}
@@ -428,20 +488,26 @@ class F1EvaluatorTestCase(unittest.TestCase):
 
         res = evaluator.calculate()
 
-        lable1_score = metrics.f1_score(y_pred=np.array([0.6, 0.7, 0.6, 0.3, 0.6]) > 0.5,
-                                        y_true=np.array([1, 0, 1, 0, 1]))
+        lable1_score = metrics.f1_score(
+            y_pred=np.array([0.6, 0.7, 0.6, 0.3, 0.6]) > 0.5,
+            y_true=np.array([1, 0, 1, 0, 1])
+        )
 
-        label2_score = metrics.f1_score(y_pred=np.array([0.2, 0.2, 0.6, 0.55, 0.4]) > 0.5,
-                                        y_true=np.array([1, 1, 0, 1, 1]))
+        label2_score = metrics.f1_score(
+            y_pred=np.array([0.2, 0.2, 0.6, 0.55, 0.4]) > 0.5,
+            y_true=np.array([1, 1, 0, 1, 1])
+        )
 
         correct = (lable1_score + label2_score) / 2.
 
         self.assertAlmostEqual(res.score, correct)
 
     def test_correct_score_calculation_multi_label_micro(self):
-        evaluator = evaluators.F1Evaluator(model_output_key=None,
-                                           batch_target_key='target',
-                                           average='micro')
+        evaluator = evaluators.F1Evaluator(
+            model_output_key=None,
+            batch_target_key='target',
+            average='micro'
+        )
 
         output = torch.tensor([[0.6, 0.2], [0.7, 0.2], [0.6, 0.6], [0.3, 0.55]], dtype=torch.float32)
         batch = {'target': torch.tensor([[1, 1], [0, 1], [1, 0], [0, 1]], dtype=torch.float32)}
@@ -453,8 +519,10 @@ class F1EvaluatorTestCase(unittest.TestCase):
 
         res = evaluator.calculate()
 
-        correct = metrics.f1_score(y_pred=np.array([0.6, 0.7, 0.6, 0.3, 0.6, 0.2, 0.2, 0.6, 0.55, 0.4]) > 0.5,
-                                   y_true=np.array([1, 0, 1, 0, 1, 1, 1, 0, 1, 1]))
+        correct = metrics.f1_score(
+            y_pred=np.array([0.6, 0.7, 0.6, 0.3, 0.6, 0.2, 0.2, 0.6, 0.55, 0.4]) > 0.5,
+            y_true=np.array([1, 0, 1, 0, 1, 1, 1, 0, 1, 1])
+        )
 
         self.assertAlmostEqual(res.score, correct)
 
@@ -462,9 +530,11 @@ class F1EvaluatorTestCase(unittest.TestCase):
 class MultiClassF1EvaluatorTestCase(unittest.TestCase):
 
     def test_correct_score_calculation_macro(self):
-        evaluator = evaluators.MultiClassF1Evaluator(model_output_key=None,
-                                                     batch_target_key='target',
-                                                     average='macro')
+        evaluator = evaluators.MultiClassF1Evaluator(
+            model_output_key=None,
+            batch_target_key='target',
+            average='macro'
+        )
 
         output = torch.tensor([[0.5, 0.1, 0.4], [0.3, 0.3, 0.4], [0.5, 0.5, 0.0]], dtype=torch.float32)
         batch = {'target': torch.tensor([0, 2, 2], dtype=torch.float32)}
@@ -476,14 +546,20 @@ class MultiClassF1EvaluatorTestCase(unittest.TestCase):
 
         res = evaluator.calculate()
 
-        correct = metrics.f1_score(y_pred=np.array([0, 2, 0, 2]), y_true=np.array([0, 2, 2, 2]), average='macro')
+        correct = metrics.f1_score(
+            y_pred=np.array([0, 2, 0, 2]),
+            y_true=np.array([0, 2, 2, 2]),
+            average='macro'
+        )
 
         self.assertAlmostEqual(res.score, correct)
 
     def test_correct_score_calculation_micro(self):
-        evaluator = evaluators.MultiClassF1Evaluator(model_output_key=None,
-                                                     batch_target_key='target',
-                                                     average='micro')
+        evaluator = evaluators.MultiClassF1Evaluator(
+            model_output_key=None,
+            batch_target_key='target',
+            average='micro'
+        )
 
         output = torch.tensor([[0.5, 0.1, 0.4], [0.3, 0.3, 0.4], [0.5, 0.5, 0.0]], dtype=torch.float32)
         batch = {'target': torch.tensor([0, 2, 2], dtype=torch.float32)}
@@ -495,7 +571,11 @@ class MultiClassF1EvaluatorTestCase(unittest.TestCase):
 
         res = evaluator.calculate()
 
-        correct = metrics.f1_score(y_pred=np.array([0, 2, 0, 2]), y_true=np.array([0, 2, 2, 2]), average='micro')
+        correct = metrics.f1_score(
+            y_pred=np.array([0, 2, 0, 2]),
+            y_true=np.array([0, 2, 2, 2]),
+            average='micro'
+        )
 
         self.assertAlmostEqual(res.score, correct)
 
@@ -509,24 +589,32 @@ class TokenLabelingEvaluatorWrapperTestCase(unittest.TestCase):
         batch_target_key = 'target'
         end_padded = True
 
-        wrapped_evaluator = evaluators.F1Evaluator(model_output_key=model_output_key,
-                                                   batch_target_key=batch_target_key,
-                                                   average='binary')
-        evaluator = evaluators.TokenLabelingEvaluatorWrapper(evaluator=wrapped_evaluator,
-                                                             batch_input_sequence_length_idx=bi_sequence_len_idx,
-                                                             batch_input_key=batch_input_key,
-                                                             model_output_key=model_output_key,
-                                                             batch_target_key=batch_target_key,
-                                                             end_padded=end_padded)
+        wrapped_evaluator = evaluators.F1Evaluator(
+            model_output_key=model_output_key,
+            batch_target_key=batch_target_key,
+            average='binary'
+        )
+        evaluator = evaluators.TokenLabelingEvaluatorWrapper(
+            evaluator=wrapped_evaluator,
+            batch_input_sequence_length_idx=bi_sequence_len_idx,
+            batch_input_key=batch_input_key,
+            model_output_key=model_output_key,
+            batch_target_key=batch_target_key,
+            end_padded=end_padded
+        )
 
         output = torch.tensor([[0.9, 0.2, -2.], [0.8, 0.3, -2.]])
-        batch = {'target': torch.tensor([[1., 1., -1.], [0., 0., -1.]]),
-                 'input': [None, torch.tensor([2, 2], dtype=torch.int)]}
+        batch = {
+            'target': torch.tensor([[1., 1., -1.], [0., 0., -1.]]),
+            'input': [None, torch.tensor([2, 2], dtype=torch.int)]
+        }
         evaluator.step(output, batch)
 
         output = torch.tensor([[0.2, 0.98, -2.], [0.76, -2, -2.]])
-        batch = {'target': torch.tensor([[1., 1., -1.], [0., -1, -1.]]),
-                 'input': [None, torch.tensor([2, 1], dtype=torch.int)]}
+        batch = {
+            'target': torch.tensor([[1., 1., -1.], [0., -1, -1.]]),
+            'input': [None, torch.tensor([2, 1], dtype=torch.int)]
+        }
         evaluator.step(output, batch)
 
         res = evaluator.calculate()
@@ -539,35 +627,52 @@ class TokenLabelingEvaluatorWrapperTestCase(unittest.TestCase):
         model_output_key = None
         batch_target_key = 'target'
         end_padded = True
-        wrapped_evaluator = evaluators.F1Evaluator(model_output_key=model_output_key,
-                                                   batch_target_key=batch_target_key,
-                                                   average='macro')
+        wrapped_evaluator = evaluators.F1Evaluator(
+            model_output_key=model_output_key,
+            batch_target_key=batch_target_key,
+            average='macro'
+        )
 
-        evaluator = evaluators.TokenLabelingEvaluatorWrapper(evaluator=wrapped_evaluator,
-                                                             batch_input_sequence_length_idx=bi_sequence_len_idx,
-                                                             batch_input_key=batch_input_key,
-                                                             model_output_key=model_output_key,
-                                                             batch_target_key=batch_target_key,
-                                                             end_padded=end_padded)
+        evaluator = evaluators.TokenLabelingEvaluatorWrapper(
+            evaluator=wrapped_evaluator,
+            batch_input_sequence_length_idx=bi_sequence_len_idx,
+            batch_input_key=batch_input_key,
+            model_output_key=model_output_key,
+            batch_target_key=batch_target_key,
+            end_padded=end_padded
+        )
 
-        output = torch.tensor([[[0.6, 0.2], [0.7, 0.2], [-2., -2.]], [[0.6, 0.6], [0.3, 0.55], [-2., -2.]]],
-                              dtype=torch.float32)
-        batch = {'target': torch.tensor([[[1, 1], [0, 1], [-1, -1]], [[1, 0], [0, 1], [-1, -1]]], dtype=torch.float32),
-                 'input': [None, torch.tensor([2, 2], dtype=torch.int)]}
+        output = torch.tensor(
+            [[[0.6, 0.2], [0.7, 0.2], [-2., -2.]], [[0.6, 0.6], [0.3, 0.55], [-2., -2.]]],
+            dtype=torch.float32
+        )
+        batch = {
+            'target': torch.tensor(
+                [[[1, 1], [0, 1], [-1, -1]], [[1, 0], [0, 1], [-1, -1]]],
+                dtype=torch.float32
+            ),
+            'input': [None, torch.tensor([2, 2], dtype=torch.int)]
+        }
         evaluator.step(output, batch)
 
         output = torch.tensor([[[0.6, 0.4]]], dtype=torch.float32)
-        batch = {'target': torch.tensor([[[1, 1]]], dtype=torch.float32),
-                 'input': [None, torch.tensor([1], dtype=torch.int)]}
+        batch = {
+            'target': torch.tensor([[[1, 1]]], dtype=torch.float32),
+            'input': [None, torch.tensor([1], dtype=torch.int)]
+        }
         evaluator.step(output, batch)
 
         res = evaluator.calculate()
 
-        lable1_score = metrics.f1_score(y_pred=np.array([0.6, 0.7, 0.6, 0.3, 0.6]) > 0.5,
-                                        y_true=np.array([1, 0, 1, 0, 1]))
+        lable1_score = metrics.f1_score(
+            y_pred=np.array([0.6, 0.7, 0.6, 0.3, 0.6]) > 0.5,
+            y_true=np.array([1, 0, 1, 0, 1])
+        )
 
-        label2_score = metrics.f1_score(y_pred=np.array([0.2, 0.2, 0.6, 0.55, 0.4]) > 0.5,
-                                        y_true=np.array([1, 1, 0, 1, 1]))
+        label2_score = metrics.f1_score(
+            y_pred=np.array([0.2, 0.2, 0.6, 0.55, 0.4]) > 0.5,
+            y_true=np.array([1, 1, 0, 1, 1])
+        )
 
         correct = (lable1_score + label2_score) / 2.
 
@@ -579,30 +684,44 @@ class TokenLabelingEvaluatorWrapperTestCase(unittest.TestCase):
         model_output_key = None
         batch_target_key = 'target'
         end_padded = True
-        wrapped_evaluator = evaluators.MultiClassF1Evaluator(model_output_key=model_output_key,
-                                                             batch_target_key=batch_target_key,
-                                                             average='macro')
+        wrapped_evaluator = evaluators.MultiClassF1Evaluator(
+            model_output_key=model_output_key,
+            batch_target_key=batch_target_key,
+            average='macro'
+        )
 
-        evaluator = evaluators.TokenLabelingEvaluatorWrapper(evaluator=wrapped_evaluator,
-                                                             batch_input_sequence_length_idx=bi_sequence_len_idx,
-                                                             batch_input_key=batch_input_key,
-                                                             model_output_key=model_output_key,
-                                                             batch_target_key=batch_target_key,
-                                                             end_padded=end_padded)
+        evaluator = evaluators.TokenLabelingEvaluatorWrapper(
+            evaluator=wrapped_evaluator,
+            batch_input_sequence_length_idx=bi_sequence_len_idx,
+            batch_input_key=batch_input_key,
+            model_output_key=model_output_key,
+            batch_target_key=batch_target_key,
+            end_padded=end_padded
+        )
 
-        output = torch.tensor([[[0.5, 0.1, 0.4], [0.3, 0.3, 0.4]], [[0.6, 0.4, 0.0], [-2., -2., -2.]]],
-                              dtype=torch.float32)
-        batch = {'target': torch.tensor([[0, 2], [2, -1]], dtype=torch.float32),
-                 'input': [None, torch.tensor([2, 1], dtype=torch.int)]}
+        output = torch.tensor(
+            [[[0.5, 0.1, 0.4], [0.3, 0.3, 0.4]], [[0.6, 0.4, 0.0], [-2., -2., -2.]]],
+            dtype=torch.float32
+        )
+        batch = {
+            'target': torch.tensor([[0, 2], [2, -1]], dtype=torch.float32),
+            'input': [None, torch.tensor([2, 1], dtype=torch.int)]
+        }
         evaluator.step(output, batch)
 
         output = torch.tensor([[[0.1, 0.1, 0.8]]], dtype=torch.float32)
-        batch = {'target': torch.tensor([[2]], dtype=torch.float32),
-                 'input': [None, torch.tensor([1], dtype=torch.int)]}
+        batch = {
+            'target': torch.tensor([[2]], dtype=torch.float32),
+            'input': [None, torch.tensor([1], dtype=torch.int)]
+        }
         evaluator.step(output, batch)
 
         res = evaluator.calculate()
 
-        correct = metrics.f1_score(y_pred=np.array([0, 2, 0, 2]), y_true=np.array([0, 2, 2, 2]), average='macro')
+        correct = metrics.f1_score(
+            y_pred=np.array([0, 2, 0, 2]),
+            y_true=np.array([0, 2, 2, 2]),
+            average='macro'
+        )
 
         self.assertAlmostEqual(res.score, correct)

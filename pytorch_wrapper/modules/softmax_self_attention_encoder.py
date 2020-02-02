@@ -32,13 +32,18 @@ class SoftmaxSelfAttentionEncoder(nn.Module):
         """
 
         att_scores = self._attention_mlp(batch_sequences)
-        mask = pwF.create_mask_from_length(batch_sequence_lengths, batch_sequences.size(1),
-                                           self._is_end_padded).unsqueeze(-1)
+        mask = pwF.create_mask_from_length(
+            batch_sequence_lengths,
+            batch_sequences.size(1),
+            self._is_end_padded
+        ).unsqueeze(-1)
 
         masked_att_scores = att_scores.masked_fill(mask == 0, -1e9)
 
         masked_att_scores = F.softmax(masked_att_scores, dim=-2)
         masked_att_scores_t = torch.transpose(masked_att_scores, 1, 2)
 
-        return {'output': torch.matmul(masked_att_scores_t, batch_sequences).squeeze(1),
-                'att_scores': masked_att_scores.squeeze(2)}
+        return {
+            'output': torch.matmul(masked_att_scores_t, batch_sequences).squeeze(1),
+            'att_scores': masked_att_scores.squeeze(2)
+        }

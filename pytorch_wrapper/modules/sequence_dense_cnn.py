@@ -44,7 +44,8 @@ class SequenceDenseCNN(nn.Module):
             input_projection_layer = list()
 
             input_projection_layer.append(
-                nn.Conv1d(in_channels=input_size, out_channels=projection_layer_size, kernel_size=1))
+                nn.Conv1d(in_channels=input_size, out_channels=projection_layer_size, kernel_size=1)
+            )
             input_projection_layer.append(activation())
             if dp > 0:
                 input_projection_layer.append(nn.Dropout(dp))
@@ -54,9 +55,13 @@ class SequenceDenseCNN(nn.Module):
 
             for layer_depth in range(cnn_depth):
                 current_layer = list()
-                current_layer.append(nn.Conv1d(in_channels=projection_layer_size + layer_depth * feature_map_increase,
-                                               out_channels=feature_map_increase,
-                                               kernel_size=kernel_height))
+                current_layer.append(
+                    nn.Conv1d(
+                        in_channels=projection_layer_size + layer_depth * feature_map_increase,
+                        out_channels=feature_map_increase,
+                        kernel_size=kernel_height
+                    )
+                )
                 current_layer.append(activation())
                 if dp > 0:
                     current_layer.append(nn.Dropout(dp))
@@ -69,7 +74,12 @@ class SequenceDenseCNN(nn.Module):
 
         conv_result_size = input_size + (projection_layer_size + cnn_depth * feature_map_increase) * len(kernel_heights)
         self._output_projection_layer.append(
-            nn.Conv1d(in_channels=conv_result_size, out_channels=output_projection_layer_size, kernel_size=1))
+            nn.Conv1d(
+                in_channels=conv_result_size,
+                out_channels=output_projection_layer_size,
+                kernel_size=1
+            )
+        )
         self._output_projection_layer.append(activation())
         if dp > 0:
             self._output_projection_layer.append(nn.Dropout(dp))

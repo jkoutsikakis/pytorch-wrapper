@@ -38,8 +38,10 @@ class SequenceBasicCNNEncoder(nn.Module):
         self._input_activation = input_activation() if input_activation is not None else input_activation
 
         self._convolutional_layers = nn.ModuleList(
-            modules=[nn.Conv1d(in_channels=time_step_size, out_channels=out_channels, kernel_size=kernel_height)
-                     for kernel_height in kernel_heights]
+            modules=[
+                nn.Conv1d(in_channels=time_step_size, out_channels=out_channels, kernel_size=kernel_height)
+                for kernel_height in kernel_heights
+            ]
         )
 
         if pre_pooling_activation is not None:
@@ -63,7 +65,8 @@ class SequenceBasicCNNEncoder(nn.Module):
         """
 
         if self._min_len > batch_sequences.shape[1]:
-            batch_sequences = pwF.pad(batch_sequences, self._min_len - batch_sequences.shape[1], dim=1, pad_at_end=False)
+            batch_sequences = pwF.pad(batch_sequences, self._min_len - batch_sequences.shape[1], dim=1,
+                                      pad_at_end=False)
 
         convolutions = [conv(batch_sequences.transpose(1, 2)) for conv in self._convolutional_layers]
 

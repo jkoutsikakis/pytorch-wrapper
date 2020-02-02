@@ -58,8 +58,12 @@ class TransformerEncoderBlock(nn.Module):
 
         batch_sequences = self._norm_2(self._dropout_2(batch_sequences))
 
-        mask = pwF.create_mask_from_length(batch_sequence_lengths, batch_sequences.shape[1],
-                                           self._is_end_padded).unsqueeze(-1)
+        mask = pwF.create_mask_from_length(
+            batch_sequence_lengths,
+            batch_sequences.shape[1],
+            self._is_end_padded
+        ).unsqueeze(-1)
+
         batch_sequences = batch_sequences.masked_fill(mask == 0, 0)
 
         return batch_sequences

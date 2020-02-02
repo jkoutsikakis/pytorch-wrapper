@@ -10,11 +10,10 @@ class MLPTestCase(unittest.TestCase):
 
     def test_execution(self):
         x = torch.tensor(
-            [
-                [1, 2, 3],
-                [4, 5, 6],
-                [1, 2, 3]
-            ], dtype=torch.float32
+            [[1, 2, 3],
+             [4, 5, 6],
+             [1, 2, 3]],
+            dtype=torch.float32
         )
 
         model = modules.MLP(
