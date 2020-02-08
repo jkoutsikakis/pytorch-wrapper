@@ -1,0 +1,26 @@
+language: python
+branches:
+  only:
+  - master
+  - develop
+  - "/v\\d+\\.\\d+\\.\\d+/"
+python:
+- '3.6'
+- '3.7'
+- '3.8'
+install:
+- pip install .
+- pip install nose
+- pip install coveralls
+script:
+- nosetests --with-coverage --cover-package=pytorch_wrapper
+after_success:
+- coveralls
+deploy:
+  provider: pypi
+  user: __token__
+  password:
+    secure: j3Vu+yo3i82tTP7HCMkTLM0FrGHZc50xnMY1wHoSWMwluIXtpfw3/1kL/Os7S/or6lei4FB0yRU85/sp2utEB0C5o3f3ykwdS/3o6uwuZYkXY2GX2d7C8M5+sP/MP3sgvzEUdO0rmdQv4hiKf+Tkk399ZTi739DDVwbqlm+uqCu7pOACxNvrY9lCunew3U2rK8PzMXujHzbu84ja2Zrcj7EZq1lJb2HTwcdqMLkUlpbnHW6nPjre+JObBB52MHdJ8HrV71vNBVS3pKNQXgax9cqDyN8m6Uaroj2CysvO7RdOZJSUdTp1aNDpti5mKx9BTNCh5xXwEIEU9uO+RpNEMM8PP0TdK27+lOHFOc649chlAZsxegEQ79QuHZV5/l5vBRHVudCAYXPafI74B52Iy6p6aSk5O/t0bg4lQFgbGDO0+IPPE//LEJeOU6dstQAvvq8r8Wg71ii33pXXxhrXSmPs6JJWMqyUHGU5B6FA3LFtoAD5Dsgpq9Fg8yU4C1JPP4ZB246bq5nd37TEaE6IM+jJ99/sXb2YG3TzxNG9soF7PTnwShgPIPGAHbna79BFX0tYtOH6Ovg/V9Mii2xPyUHUiLHKqra8O6rbS3Fk3fXLEtazRxkfnxbOGoXSQHmdvwGnyJNCFCIG9YWDKw03cCa8VJGOG4IgDc+F3mvyN7g=
+  on:
+    tags: true
+    branch: master
