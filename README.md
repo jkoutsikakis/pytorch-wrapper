@@ -1,8 +1,8 @@
-# PyTorchWrapper
+# PyTorch Wrapper
 
 ![Logo](logo.png)
 
-PyTorchWrapper is a library that provides a systematic and extensible way to build, train, evaluate, and tune deep learning models
+PyTorch Wrapper is a library that provides a systematic and extensible way to build, train, evaluate, and tune deep learning models
 using PyTorch. It also provides several ready to use modules and functions for fast model development.
 
 | Branch | Build | Coverage |
@@ -37,6 +37,7 @@ There are also the following examples in notebook format:
 3. [Tuning Image Classifier](examples/3_tuning_image_classifier.ipynb)
 4. [Text Classification Task](examples/4_text_classification_task.ipynb)
 5. [Token Classification Task](examples/5_token_classification_task.ipynb)
-6. [Custom Callback](examples/6_custom_callback.ipynb)
-7. [Custom Loss Wrapper](examples/7_custom_loss_wrapper.ipynb)
-8. [Custom Evaluator](examples/8_custom_evaluator.ipynb)
+6. [Text Classification Task using BERT](examples/6_text_classification_task_using_bert.ipynb)
+7. [Custom Callback](examples/7_custom_callback.ipynb)
+8. [Custom Loss Wrapper](examples/8_custom_loss_wrapper.ipynb)
+9. [Custom Evaluator](examples/9_custom_evaluator.ipynb)
