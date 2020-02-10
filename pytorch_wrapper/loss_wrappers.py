@@ -9,12 +9,12 @@ class AbstractLossWrapper(ABC):
     """
 
     @abstractmethod
-    def calculate_loss(self, batch, output, training_context, last_activation=None):
+    def calculate_loss(self, output, batch, training_context, last_activation=None):
         """
         Calculates the loss for a single batch.
 
-        :param batch: Dict that contains all information needed by the loss wrapper.
         :param output: Output of the model.
+        :param batch: Dict that contains all information needed by the loss wrapper.
         :param training_context: Dict containing information regarding the training process.
         :param last_activation: Last activation provided to the System.
         :return: Output of the loss function/module.
