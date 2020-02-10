@@ -26,7 +26,7 @@ cd pytorch-wrapper
 pip install .
 ```
 
-## Basic usage pattern
+## Basic abstract usage pattern
 
 ```python
 import torch
