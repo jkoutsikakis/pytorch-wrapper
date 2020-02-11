@@ -125,7 +125,6 @@ class Tuner(AbstractTuner):
         :param algorithm: Hyperopt's tuning algorithm (e.g. hyperopt.rand.suggest, hyperopt.tpe.suggest).
         :param fit_iterations: Number of trials.
         """
-        
         super(Tuner, self).__init__(hyper_parameter_generators, algorithm, fit_iterations)
         self._step_function = step_function
 

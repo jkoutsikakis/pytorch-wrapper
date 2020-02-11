@@ -21,7 +21,6 @@ class SequenceBasicCNNBlock(nn.Module):
         :param activation: Callable that creates the activation function.
         :param dp: Dropout probability.
         """
-
         super(SequenceBasicCNNBlock, self).__init__()
 
         self._kernel_height = kernel_height
@@ -52,4 +51,3 @@ class SequenceBasicCNNBlock(nn.Module):
             batch_sequences = self._dp(batch_sequences)
 
         return batch_sequences
-
