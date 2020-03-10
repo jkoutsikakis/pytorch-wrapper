@@ -87,13 +87,10 @@ class AbstractEvaluator(ABC):
     Objects of derived classes are used to evaluate a model on a dataset using a specific metric.
     """
 
-    def __init__(self):
-        self.reset()
-
     @abstractmethod
     def reset(self):
         """
-        (Re)initializes the object. Called at the beginning of the evaluation step.
+        Resets the evaluator. Called at the beginning of the evaluation step.
         """
 
         pass
@@ -156,7 +153,8 @@ class GenericPointWiseLossEvaluator(AbstractEvaluator):
         self._label = label
         self._score_format = score_format
         self._batch_target_key = batch_target_key
-        self.reset()
+        self._loss = 0
+        self._examples_nb = 0
 
     def reset(self):
         self._loss = 0
@@ -192,7 +190,8 @@ class AccuracyEvaluator(AbstractEvaluator):
         self._threshold = threshold
         self._model_output_key = model_output_key
         self._batch_target_key = batch_target_key
-        self.reset()
+        self._outputs = []
+        self._targets = []
 
     def reset(self):
         self._outputs = []
@@ -233,7 +232,8 @@ class MultiClassAccuracyEvaluator(AbstractEvaluator):
         super(MultiClassAccuracyEvaluator, self).__init__()
         self._model_output_key = model_output_key
         self._batch_target_key = batch_target_key
-        self.reset()
+        self._outputs = []
+        self._targets = []
 
     def reset(self):
         self._outputs = []
@@ -274,7 +274,8 @@ class AUROCEvaluator(AbstractEvaluator):
         self._batch_target_key = batch_target_key
         self._average = average
         self._target_threshold = target_threshold
-        self.reset()
+        self._outputs = []
+        self._targets = []
 
     def reset(self):
         self._outputs = []
@@ -315,7 +316,8 @@ class PrecisionEvaluator(AbstractEvaluator):
         self._model_output_key = model_output_key
         self._batch_target_key = batch_target_key
         self._average = average
-        self.reset()
+        self._outputs = []
+        self._targets = []
 
     def reset(self):
         self._outputs = []
@@ -354,7 +356,8 @@ class MultiClassPrecisionEvaluator(AbstractEvaluator):
         self._model_output_key = model_output_key
         self._batch_target_key = batch_target_key
         self._average = average
-        self.reset()
+        self._outputs = []
+        self._targets = []
 
     def reset(self):
         self._outputs = []
@@ -395,7 +398,8 @@ class RecallEvaluator(AbstractEvaluator):
         self._model_output_key = model_output_key
         self._batch_target_key = batch_target_key
         self._average = average
-        self.reset()
+        self._outputs = []
+        self._targets = []
 
     def reset(self):
         self._outputs = []
@@ -434,7 +438,8 @@ class MultiClassRecallEvaluator(AbstractEvaluator):
         self._model_output_key = model_output_key
         self._batch_target_key = batch_target_key
         self._average = average
-        self.reset()
+        self._outputs = []
+        self._targets = []
 
     def reset(self):
         self._outputs = []
@@ -475,7 +480,8 @@ class F1Evaluator(AbstractEvaluator):
         self._model_output_key = model_output_key
         self._batch_target_key = batch_target_key
         self._average = average
-        self.reset()
+        self._outputs = []
+        self._targets = []
 
     def reset(self):
         self._outputs = []
@@ -514,7 +520,8 @@ class MultiClassF1Evaluator(AbstractEvaluator):
         self._model_output_key = model_output_key
         self._batch_target_key = batch_target_key
         self._average = average
-        self.reset()
+        self._outputs = []
+        self._targets = []
 
     def reset(self):
         self._outputs = []
@@ -556,14 +563,13 @@ class TokenLabelingEvaluatorWrapper(AbstractEvaluator):
         :param end_padded: Whether the sequences are end-padded.
         """
 
-        self._evaluator = evaluator
         super(TokenLabelingEvaluatorWrapper, self).__init__()
+        self._evaluator = evaluator
         self._batch_input_sequence_length_idx = batch_input_sequence_length_idx
         self._batch_input_key = batch_input_key
         self._model_output_key = model_output_key
         self._batch_target_key = batch_target_key
         self._end_padded = end_padded
-        self.reset()
 
     def reset(self):
         self._evaluator.reset()
