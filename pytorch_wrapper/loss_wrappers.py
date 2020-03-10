@@ -22,9 +22,9 @@ class AbstractLossWrapper(ABC):
         pass
 
     @abstractmethod
-    def _to(self, device):
+    def to(self, device):
         """
-        Transfers the wrapped loss to the specified device (inplace).
+        Transfers the wrapped loss to the specified device (inplace). Called automatically inside System.
 
         :param device: Device to be transferred to.
         """
@@ -60,12 +60,7 @@ class PassThroughLossWrapper(AbstractLossWrapper):
         else:
             return output[self._model_loss_key]
 
-    def _to(self, device):
-        """
-        Transfers the wrapped loss to the specified device (inplace).
-
-        :param device: Device to be transferred to.
-        """
+    def to(self, device):
         pass
 
 
@@ -100,13 +95,8 @@ class GenericPointWiseLossWrapper(AbstractLossWrapper):
 
         return self._loss(output, batch_targets)
 
-    def _to(self, device):
-        """
-        Transfers the wrapped loss to the specified device (inplace).
-
-        :param device: Device to be transferred to.
-        """
-        self._loss.to(device)
+    def to(self, device):
+        self._loss = self._loss.to(device)
 
 
 class TokenLabelingGenericPointWiseLossWrapper(AbstractLossWrapper):
@@ -162,10 +152,5 @@ class TokenLabelingGenericPointWiseLossWrapper(AbstractLossWrapper):
 
         return self._loss(output, batch_targets)
 
-    def _to(self, device):
-        """
-        Transfers the wrapped loss to the specified device (inplace).
-
-        :param device: Device to be transferred to.
-        """
-        self._loss.to(device)
+    def to(self, device):
+        self._loss = self._loss.to(device)

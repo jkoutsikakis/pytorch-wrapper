@@ -134,6 +134,14 @@ class AbstractEvaluator(ABC):
         self.step(output, dataset, last_activation)
         return self.calculate()
 
+    def to(self, device):
+        """
+        Transfers the evaluator to the specified device (inplace). Called automatically inside System.
+
+        :param device: Device to be transferred to.
+        """
+        pass
+
 
 class GenericPointWiseLossEvaluator(AbstractEvaluator):
     """
@@ -171,6 +179,14 @@ class GenericPointWiseLossEvaluator(AbstractEvaluator):
             self._label, self._score_format,
             is_max_better=False
         )
+
+    def to(self, device):
+        """
+        Transfers the evaluator to the specified device (inplace). Called automatically inside System.
+
+        :param device: Device to be transferred to.
+        """
+        self._loss_wrapper.to(device)
 
 
 class AccuracyEvaluator(AbstractEvaluator):
@@ -599,3 +615,6 @@ class TokenLabelingEvaluatorWrapper(AbstractEvaluator):
 
     def calculate(self):
         return self._evaluator.calculate()
+
+    def to(self, device):
+        self._evaluator.to(device)
