@@ -1,0 +1,5 @@
+coveralls
+doc8
+nose
+sphinx
+sphinx-rtd-theme

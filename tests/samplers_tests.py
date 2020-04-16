@@ -35,7 +35,7 @@ class OrderedBatchWiseRandomSampler(unittest.TestCase):
 
         for i in range(1, 3):
             self.assertEqual(data_source[out[i]], data_source[out[0]])
-            self.assertEqual(data_source[out[i+3]], data_source[out[3]])
+            self.assertEqual(data_source[out[i + 3]], data_source[out[3]])
 
 
 class SubsetOrderedBatchWiseRandomSampler(unittest.TestCase):

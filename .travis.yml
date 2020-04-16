@@ -8,14 +8,22 @@ python:
 - '3.6'
 - '3.7'
 - '3.8'
+
+matrix:
+  fast_finish: true
+
 install:
+- pip install tox-travis
+- pip install -r test-requirements.txt
 - pip install .
-- pip install nose
-- pip install coveralls
+
 script:
-- nosetests --with-coverage --cover-package=pytorch_wrapper
+- tox -e pep8
+- tox
+
 after_success:
 - coveralls
+
 deploy:
   provider: pypi
   user: __token__
