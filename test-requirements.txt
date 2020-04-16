@@ -1,5 +1,6 @@
 coveralls
 doc8
+flake8
 nose
 sphinx
 sphinx-rtd-theme
