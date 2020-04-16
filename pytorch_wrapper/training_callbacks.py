@@ -1,5 +1,6 @@
 from abc import ABC
 from tqdm.auto import tqdm
+from uuid import uuid4
 
 
 class AbstractCallback(ABC):
@@ -113,7 +114,7 @@ class EarlyStoppingCriterionCallback(StoppingCriterionCallback):
     Stops the training process if the results do not get better for a number of epochs.
     """
 
-    def __init__(self, patience, evaluation_data_loader_key, evaluator_key, tmp_best_state_filepath):
+    def __init__(self, patience, evaluation_data_loader_key, evaluator_key, tmp_best_state_filepath=None):
         """
         :param patience: How many epochs to forgive deteriorating results.
         :param evaluation_data_loader_key: Key of the data-loader dict (provided as an argument to the train method of
@@ -127,7 +128,11 @@ class EarlyStoppingCriterionCallback(StoppingCriterionCallback):
         self._evaluator_key = evaluator_key
         self._best_epoch = 0
         self._current_patience = self._patience
-        self._best_state_filepath = tmp_best_state_filepath
+
+        if tmp_best_state_filepath is None:
+            self._best_state_filepath = f'{uuid4().hex}.es.weights'
+        else:
+            self._best_state_filepath = tmp_best_state_filepath
 
     def on_training_start(self, training_context):
         self._best_epoch = 0

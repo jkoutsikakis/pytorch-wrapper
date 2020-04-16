@@ -3,7 +3,8 @@ import unittest
 
 from unittest.mock import MagicMock
 
-from pytorch_wrapper.loss_wrappers import GenericPointWiseLossWrapper, TokenLabelingGenericPointWiseLossWrapper
+from pytorch_wrapper.loss_wrappers import GenericPointWiseLossWrapper, TokenLabelingGenericPointWiseLossWrapper, \
+    PassThroughLossWrapper
 
 
 class GenericPointWiseLossWrapperTestCase(unittest.TestCase):
@@ -22,6 +23,35 @@ class GenericPointWiseLossWrapperTestCase(unittest.TestCase):
         res = loss_wrapper.calculate_loss(output, batch, training_context)
 
         self.assertAlmostEqual(res.item(), 0.)
+
+
+class PassThroughLossWrapperTestCase(unittest.TestCase):
+
+    def test_with_key(self):
+
+        model_loss_key = 'loss'
+        loss_wrapper = PassThroughLossWrapper(model_loss_key=model_loss_key)
+
+        output = {'loss': 10}
+        batch = {}
+        training_context = {}
+
+        res = loss_wrapper.calculate_loss(output, batch, training_context)
+
+        self.assertEqual(res, output['loss'])
+
+    def test_with_none_key(self):
+
+        model_loss_key = None
+        loss_wrapper = PassThroughLossWrapper(model_loss_key=model_loss_key)
+
+        output = 10
+        batch = {}
+        training_context = {}
+
+        res = loss_wrapper.calculate_loss(output, batch, training_context)
+
+        self.assertEqual(res, output)
 
 
 class TokenLabelingGenericPointWiseLossWrapperTestCase(unittest.TestCase):
@@ -56,7 +86,7 @@ class TokenLabelingGenericPointWiseLossWrapperTestCase(unittest.TestCase):
 
         self.assertAlmostEqual(res.item(), 0.)
 
-    def test_multilabel(self):
+    def test_multi_label(self):
         mocked_loss_module = MagicMock(side_effect=lambda x, y: (x - y).sum())
 
         bi_sequence_len_idx = 1
@@ -95,7 +125,7 @@ class TokenLabelingGenericPointWiseLossWrapperTestCase(unittest.TestCase):
 
         self.assertAlmostEqual(res.item(), 0.)
 
-    def test_multiclass(self):
+    def test_multi_class(self):
         eye = torch.eye(2)
         mocked_loss_module = MagicMock(side_effect=lambda x, y: (x - eye[y]).sum())
 

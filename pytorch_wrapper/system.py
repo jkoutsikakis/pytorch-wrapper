@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import torch
 import tqdm
 import time
@@ -364,6 +362,7 @@ class System(object):
 
         for evaluator_name in evaluators:
             evaluators[evaluator_name].reset()
+            evaluators[evaluator_name].to(self.device)
 
         with torch.no_grad():
             gen = partial(auto_tqdm, ncols=NCOLS) if verbose else lambda x: x
@@ -590,6 +589,9 @@ class _Trainer(object):
             self.callbacks.append(NumberOfEpochsStoppingCriterionCallback(1))
 
     def run(self):
+
+        self.training_context['loss_wrapper'].to(self.training_context['system'].device)
+        self.training_context['optimizer'].to(self.training_context['system'].device)
 
         for callback in self.callbacks:
             callback.on_training_start(self.training_context)

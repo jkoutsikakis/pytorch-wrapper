@@ -28,10 +28,9 @@ setup(
     install_requires=[
         'numpy>=1.14,<2',
         'scikit-learn>=0.19,<1',
-        'six>=1.11,<2',
         'torch>=1,<2',
         'tqdm>=4.36.1,<5',
-        'hyperopt>=0.1,<0.2'
+        'hyperopt>=0.2,<0.3'
     ],
     tests_require=['nose'],
     test_suite='nose.collector'
