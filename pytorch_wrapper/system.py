@@ -514,6 +514,9 @@ class System(object):
 
         return results
 
+    def __call__(self, *args, **kwargs):
+        return self.model(*args, **kwargs)
+
 
 class _Trainer(object):
 
